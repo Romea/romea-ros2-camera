@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+    <xacro:macro name="camera_sensor" 
+      params="prefix mode name configuration geometry xyz rpy parent_link mesh_visual ros_namespace">
+
+        <xacro:property name="M_PI" value="3.1415926535897931" />
+
+        <xacro:property name="link_name"
+          value="${prefix}${name}_link" />
+        <xacro:property name="joint_name"
+          value="${prefix}${name}_joint" />
+        <xacro:property name="controller_name"
+          value="${prefix}${name}_controller" />
+        <xacro:property name="parent_link_name"
+          value="${prefix}${parent_link}" />
+        <xacro:property name="optical_frame_name" 
+          value="${prefix}${name}_optical_frame"/>
+        <xacro:property name="optical_joint_name" 
+          value="${prefix}${name}_optical_joint"/>
+
+        <xacro:property name="image_width"
+          value="${configuration['image_width']}" />
+        <xacro:property name="image_height"
+          value="${configuration['image_height']}" />
+        <xacro:property name="horizontal_fov"
+          value="${configuration['horizontal_fov']/180.*pi}" />
+        <xacro:property name="frame_rate"
+          value="${configuration['frame_rate']}" />
+
+        <xacro:property name="mass" value="${geometry['mass']}" />
+        <xacro:property name="aabb" value="${geometry['aabb']}" />
+        <xacro:property name="aabb_length" value="${geometry['aabb']['length']}" />
+        <xacro:property name="aabb_width" value="${geometry['aabb']['width']}" />
+        <xacro:property name="aabb_height" value="${geometry['aabb']['height']}" />
+        <xacro:property name="aabb_center" value="${geometry['aabb']['center']}" />
+
+        <xacro:if value="${mesh_visual == True and 'mesh' in geometry}">
+        <xacro:property name="mesh_xyz" value="${geometry['mesh']['xyz']}" />
+        <xacro:property name="mesh_rpy" value="${geometry['mesh']['rpy']}" />
+        <xacro:property name="mesh_scale" value="${geometry['mesh']['scale']}" />
+        <xacro:property name="mesh_filename" value="${geometry['mesh']['filename']}" />
+        </xacro:if>
+
+        <link name="${link_name}">
+            <inertial>
+                <mass value="${mass}" />
+                <origin xyz="${aabb_center[0]} ${aabb_center[1]} ${aabb_center[2]}" />
+                <inertia ixx="${0.0833333 * mass * (aabb_width*aabb_width + aabb_height*aabb_height)}"
+                ixy="0.0" ixz="0.0"
+                iyy="${0.0833333 * mass * (aabb_height*aabb_height + aabb_length*aabb_length)}" iyz="0.0"
+                izz="${0.0833333 * mass * (aabb_length*aabb_length + aabb_width*aabb_width)}" />
+            </inertial>
+            <visual>
+                <xacro:if value="${mesh_visual == True and 'mesh' in geometry}">
+                    <origin xyz="${mesh_xyz[0]} ${mesh_xyz[1]} ${mesh_xyz[2]}"
+                        rpy="${mesh_rpy[0]} ${mesh_rpy[1]} ${mesh_rpy[2]}" />
+                    <geometry>
+                        <mesh filename="${mesh_filename}"
+                        scale="${mesh_scale[0]} ${mesh_scale[1]} ${mesh_scale[2]}" />
+                    </geometry>
+                </xacro:if>
+                <xacro:if value="${mesh_visual == False or 'mesh' not in geometry}">
+                    <origin xyz="${aabb_center[0]} ${aabb_center[1]} ${aabb_center[2]}" rpy="0 0 0" />
+                    <geometry>
+                        <box size="${aabb_length} ${aabb_width} ${aabb_height}" />
+                    </geometry>
+                </xacro:if>
+            </visual>
+            <collision>
+                <origin xyz="${aabb_center[0]} ${aabb_center[1]} ${aabb_center[2]}" rpy="0 0 0" />
+                <geometry>
+                <box size="${aabb_length} ${aabb_width} ${aabb_height}" />
+                </geometry>
+            </collision>
+        </link>
+
+        <joint name="${joint_name}" type="fixed">
+            <parent link="${parent_link_name}"/>
+            <child link="${link_name}"/>
+            <origin xyz="${xyz}" rpy="${rpy}" />
+        </joint>
+
+
+        <link name="${optical_frame_name}"/>
+
+        <joint name="${optical_joint_name}" type="fixed">
+            <origin xyz="0 0 0" rpy="-${M_PI/2} 0.0 -${M_PI/2}"/>
+            <parent link="${link_name}"/>
+            <child link="${optical_frame_name}"/>
+        </joint>
+
+
+        <gazebo reference="${link_name}">
+
+          <sensor type="camera" name="${prefix}${name}">
+            <update_rate>${frame_rate}</update_rate>
+            <camera>
+              <pose>0 0 0 0 0 0</pose>
+              <horizontal_fov>${horizontal_fov/180.*M_PI}</horizontal_fov>
+              <image>
+                <width>${image_width} </width>
+                <height> ${image_height}</height>
+                <format>R8G8B8</format>
+              </image>
+              <clip>
+                <near>0.02</near>
+                <far>100</far>
+              </clip>
+              <noise>
+                <type>gaussian</type>
+                <mean>0.0</mean>
+                <stddev>0.007</stddev>
+              </noise>
+              <distortion>
+                <k1>0.0</k1>
+                <k2>0.0</k2>
+                <k3>0.0</k3>
+                <p1>0.0</p1>
+                <p2>0.0</p2>
+                <center>0.5 0.5</center>
+              </distortion>
+            </camera>
+
+            <plugin name="driver" filename="libgazebo_ros_camera.so">
+                <ros>
+                  <namespace>${ros_namespace}</namespace>
+                </ros>
+
+                <camera_name>${prefix}${name}</camera_name>
+                <hack_baseline>0.07</hack_baseline>
+            </plugin>
+          </sensor>
+        </gazebo>
+
+    </xacro:macro>
+
+</robot>

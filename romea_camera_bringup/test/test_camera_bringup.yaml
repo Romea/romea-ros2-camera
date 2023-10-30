@@ -1,0 +1,20 @@
+name: "camera"
+namespace: "ns"
+# driver:
+#   pkg: "sick_scan"
+#   ip: "192.168.1.112"
+#   port: 2112
+configuration:
+  type: axis
+  model: p1346
+  frame_rate: 30 # hz
+  resolution: 1280x720 # width x height
+geometry:
+  parent_link: "base_link"
+  xyz: [1.0, 2.0, 3.0] # meters
+  rpy: [4.0, 5.0, 6.0] # degrees
+records:
+  camera_info: false
+  image_raw: true
+ros:
+  namespace: ns

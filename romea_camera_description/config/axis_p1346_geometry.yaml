@@ -1,0 +1,10 @@
+mass: 0.6
+aabb :
+  length: 0.107
+  width: 0.078
+  height: 0.046
+  center: [0.0, 0.0, 0.0]
+#mesh:
+#  xyz: [0.0, 0.0, 0.0]
+#  rpy: [0.0, 0.0, 0.0]
+#  filename: package://zed-ros-interfaces/meshes/zed1.stl

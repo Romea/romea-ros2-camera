@@ -1,0 +1,23 @@
+horizontal_fov:
+   default: 72
+   range: [27, 72]
+resolution:
+   default: 1280x720
+   list: [2560x1920,2048x1536,1920x1080,1280x720,800x600,640x480]
+frame_rate:
+   640x480: 30
+   800x600: 30
+   1280x720: 30
+   1920x1080: 30
+   2048x1536: 20
+   2560x1920: 12
+video_mode:
+   640x480: VGA
+   800x600: SVGA
+   1280x720: 1MP
+   1920x1080: 2MP
+   2048x1536: 3MP
+   2560x1920: 5MP
+video_format:
+   default: h264
+   list: [h264,mjpeg]
