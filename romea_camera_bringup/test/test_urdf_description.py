@@ -47,7 +47,7 @@ def urdf():
 
 
 def test_camera_name(urdf):
-    assert urdf.find("link").get("name") == "robot_lidar_link"
+    assert urdf.find("link").get("name") == "robot_camera_link"
 
 
 def test_camera_position(urdf):
