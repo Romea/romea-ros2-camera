@@ -15,7 +15,7 @@
 
 from romea_common_bringup import MetaDescription, robot_urdf_prefix, device_namespace
 import romea_camera_description
-from numpy import radians, deg2rad
+from numpy import radians
 
 
 class CameraMetaDescription:
@@ -107,7 +107,7 @@ def urdf_description(robot_namespace, mode, meta_description_file_path):
     geometry={}
     geometry["parent_link"]=meta_description.get_parent_link()
     geometry["xyz"]=meta_description.get_xyz()
-    geometry["rpy"]=meta_description.get_rpy_deg()
+    geometry["rpy"]=meta_description.get_rpy_rad()
 
 
     return romea_camera_description.urdf(

@@ -1,10 +1,10 @@
-horizontal_fov:
-   default: 72
+horizontal_fov: # degree
+   default: 72 
    range: [27, 72]
 resolution:
    default: 1280x720
    list: [2560x1920,2048x1536,1920x1080,1280x720,800x600,640x480]
-frame_rate:
+frame_rate: # hz
    640x480: 30
    800x600: 30
    1280x720: 30

@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+import math
 import xacro
-import yaml
 
 from ament_index_python.packages import get_package_share_directory
 
@@ -87,8 +86,8 @@ def get_axis_complete_configuration(camera_model, user_configuration):
     configuration["image_height"] = image_height(resolution)
 
     configuration["horizontal_fov"] = evaluate_camera_parameter_from_range(
-        "axis", camera_model, specifications, user_configuration, "horizontal_fov"
-    )
+            "axis", camera_model, specifications, user_configuration, "horizontal_fov"
+    ) * math.pi/180.
 
     configuration["frame_rate"] = evaluate_camera_parameter(
         "axis", camera_model, specifications, user_configuration, "frame_rate", resolution
@@ -107,7 +106,6 @@ def urdf(prefix, mode, name, type, model, user_configuration, user_geometry, ros
 
     complete_configuration = get_camera_complete_configuration(type, model, user_configuration)
     complete_configuration_yaml_file = save_device_specifications_file(prefix, name, complete_configuration)
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",complete_configuration_yaml_file)
     geometry_yaml_file = get_camera_geometry_file_path(type, model)
 
     xacro_file = get_package_share_directory("romea_camera_description") + "/urdf/camera.xacro.urdf"
