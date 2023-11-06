@@ -22,6 +22,7 @@ from romea_common_description import (
     evaluate_parameter_from_list,
     evaluate_parameter_from_range,
     get_device_geometry_file_path,
+    get_device_geometry,
     get_device_specifications,
     save_device_specifications_file,
 )
@@ -61,6 +62,9 @@ def evaluate_camera_parameter_from_range(
 
 def get_camera_geometry_file_path(camera_type, camera_model):
     return get_device_geometry_file_path("camera", camera_type, camera_model)
+
+def get_camera_geometry(camera_type, camera_model):
+    return get_device_geometry("camera", camera_type, camera_model)
 
 
 def get_camera_specifications(camera_type, camera_model):

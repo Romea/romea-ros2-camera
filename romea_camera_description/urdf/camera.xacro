@@ -125,9 +125,15 @@
             <plugin name="driver" filename="libgazebo_ros_camera.so">
                 <ros>
                   <namespace>${ros_namespace}</namespace>
+                  <remapping>camera/image_raw:=image_raw</remapping>
+                  <remapping>camera/camera_info:=camera_info</remapping>
+                  <remapping>camera/image_raw/compressed:=image_raw/compressed</remapping>
+                  <remapping>camera/image_raw/compressedDepth:=image_raw/compressedDepth</remapping>
+                  <remapping>camera/image_raw/theora:=image_raw/theora</remapping>
+
                 </ros>
 
-                <camera_name>${prefix}${name}</camera_name>
+                <camera_name>camera</camera_name>
                 <hack_baseline>0.07</hack_baseline>
             </plugin>
           </sensor>
