@@ -92,7 +92,7 @@
 
 
         <gazebo reference="${link_name}">
-
+          <material>Gazebo/Purple</material>  
           <sensor type="camera" name="${prefix}${name}">
             <update_rate>${frame_rate}</update_rate>
             <camera>
