@@ -40,7 +40,13 @@ def evaluate_camera_parameter(
     camera_type, camera_model, specifications, user_configuration, parameter_name, key_value=None
 ):
     return evaluate_parameter(
-        "camera", camera_type, camera_model, specifications, user_configuration, parameter_name, key_value
+        "camera",
+        camera_type,
+        camera_model,
+        specifications,
+        user_configuration,
+        parameter_name,
+        key_value,
     )
 
 
@@ -48,7 +54,13 @@ def evaluate_camera_parameter_from_list(
     camera_type, camera_model, specifications, user_configuration, parameter_name, key_value=None
 ):
     return evaluate_parameter_from_list(
-        "camera", camera_type, camera_model, specifications, user_configuration, parameter_name, key_value
+        "camera",
+        camera_type,
+        camera_model,
+        specifications,
+        user_configuration,
+        parameter_name,
+        key_value,
     )
 
 
@@ -56,12 +68,19 @@ def evaluate_camera_parameter_from_range(
     camera_type, camera_model, specifications, user_configuration, parameter_name, key_value=None
 ):
     return evaluate_parameter_from_range(
-        "camera", camera_type, camera_model, specifications, user_configuration, parameter_name, key_value
+        "camera",
+        camera_type,
+        camera_model,
+        specifications,
+        user_configuration,
+        parameter_name,
+        key_value,
     )
 
 
 def get_camera_geometry_file_path(camera_type, camera_model):
     return get_device_geometry_file_path("camera", camera_type, camera_model)
+
 
 def get_camera_geometry(camera_type, camera_model):
     return get_device_geometry("camera", camera_type, camera_model)
@@ -81,17 +100,22 @@ def get_camera_complete_configuration(camera_type, camera_model, user_configurat
 def get_axis_complete_configuration(camera_model, user_configuration):
 
     specifications = get_camera_specifications("axis", camera_model)
-    
+
     configuration = {}
     resolution = evaluate_camera_parameter_from_list(
-        "axis", camera_model, specifications, user_configuration, "resolution")
+        "axis", camera_model, specifications, user_configuration, "resolution"
+    )
 
     configuration["image_width"] = image_width(resolution)
     configuration["image_height"] = image_height(resolution)
 
-    configuration["horizontal_fov"] = evaluate_camera_parameter_from_range(
+    configuration["horizontal_fov"] = (
+        evaluate_camera_parameter_from_range(
             "axis", camera_model, specifications, user_configuration, "horizontal_fov"
-    ) * math.pi/180.
+        )
+        * math.pi
+        / 180.0
+    )
 
     configuration["frame_rate"] = evaluate_camera_parameter(
         "axis", camera_model, specifications, user_configuration, "frame_rate", resolution
@@ -109,10 +133,14 @@ def get_axis_complete_configuration(camera_model, user_configuration):
 def urdf(prefix, mode, name, type, model, user_configuration, user_geometry, ros_namespace):
 
     complete_configuration = get_camera_complete_configuration(type, model, user_configuration)
-    complete_configuration_yaml_file = save_device_specifications_file(prefix, name, complete_configuration)
+    complete_configuration_yaml_file = save_device_specifications_file(
+        prefix, name, complete_configuration
+    )
     geometry_yaml_file = get_camera_geometry_file_path(type, model)
 
-    xacro_file = get_package_share_directory("romea_camera_description") + "/urdf/camera.xacro.urdf"
+    xacro_file = (
+        get_package_share_directory("romea_camera_description") + "/urdf/camera.xacro.urdf"
+    )
 
     urdf_xml = xacro.process_file(
         xacro_file,

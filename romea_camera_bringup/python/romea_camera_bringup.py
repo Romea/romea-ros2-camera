@@ -40,17 +40,24 @@ class CameraMetaDescription:
     def get_model(self):
         return self.meta_description.get("model", "configuration")
 
-    def get_frame_rate(self):
-        return self.meta_description.get_or("frame_rate", "configuration", None)
+    # perhaps add get_configuration_parameter in MetaDescription class
+    def get_configuration_parameter_or(self, parameter_name, ns=None, default_value=None):
+        if ns is None:
+            return self.meta_description.get_or(parameter_name, "configuration", None)
+        else:
+            return self.meta_description.get_or(parameter_name, "configuration." + ns, None)
 
-    def get_resolution(self):
-        return self.meta_description.get_or("resolution", "configuration", None)
+    def get_frame_rate(self, ns=None):
+        return self.get_configuration_parameter_or("frame_rate", ns, None)
 
-    def get_horizontal_fov(self):
-        return self.meta_description.get_or("horizontal_fov", "configuration", None)
+    def get_resolution(self, ns=None):
+        return self.get_configuration_parameter_or("resolution", ns, None)
 
-    def get_video_format(self):
-        return self.meta_description.get_or("video_format", "configuration", None)
+    def get_horizontal_fov(self, ns=None):
+        return self.get_configuration_parameter_or("horizontal_fov", ns, None)
+
+    def get_video_format(self, ns=None):
+        return self.get_configuration_parameter_or("horizontal_fov", ns, None)
 
     def get_parent_link(self):
         return self.meta_description.get("parent_link", "geometry")
@@ -83,22 +90,30 @@ def get_sensor_geometry(meta_description):
     return get_camera_geometry(meta_description.get_type(), meta_description.get_model())
 
 
+def get_sensor_location(meta_description):
+    return {
+        "parent_link": meta_description.get_parent_link(),
+        "xyz": meta_description.get_xyz(),
+        "rpy": meta_description.get_rpy_rad(),
+    }
+
+
+def get_sensor_configuration(meta_description, ns=None):
+    return {
+        "frame_rate": meta_description.get_frame_rate(ns),
+        "resolution": meta_description.get_resolution(ns),
+        "horizontal_fov": meta_description.get_horizontal_fov(ns),
+        "video_format": meta_description.get_video_format(ns),
+    }
+
+
 def urdf_description(robot_namespace, mode, meta_description_file_path):
 
     meta_description = CameraMetaDescription(meta_description_file_path)
 
-    ros_namespace = device_namespace(robot_namespace, meta_description.get_namespace(), meta_description.get_name())
-
-    configuration = {}
-    configuration["frame_rate"] = meta_description.get_frame_rate()
-    configuration["resolution"] = meta_description.get_resolution()
-    configuration["horizontal_fov"] = meta_description.get_horizontal_fov()
-    configuration["video_format"] = meta_description.get_video_format()
-
-    geometry = {}
-    geometry["parent_link"] = meta_description.get_parent_link()
-    geometry["xyz"] = meta_description.get_xyz()
-    geometry["rpy"] = meta_description.get_rpy_rad()
+    ros_namespace = device_namespace(
+        robot_namespace, meta_description.get_namespace(), meta_description.get_name()
+    )
 
     return urdf(
         robot_urdf_prefix(robot_namespace),
@@ -106,7 +121,7 @@ def urdf_description(robot_namespace, mode, meta_description_file_path):
         meta_description.get_name(),
         meta_description.get_type(),
         meta_description.get_model(),
-        configuration,
-        geometry,
+        get_sensor_configuration(meta_description),
+        get_sensor_location(meta_description),
         ros_namespace,
     )
