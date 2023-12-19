@@ -142,6 +142,9 @@ def urdf(prefix, mode, name, type, model, user_configuration, user_geometry, ros
         get_package_share_directory("romea_camera_description") + "/urdf/camera.xacro.urdf"
     )
 
+    if mode == "simulation":
+        mode = mode +"_gazebo_classic"
+
     urdf_xml = xacro.process_file(
         xacro_file,
         mappings={
