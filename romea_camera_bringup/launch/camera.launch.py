@@ -23,7 +23,6 @@ from launch.actions import (
 )
 
 from launch_ros.actions import PushRosNamespace
-from launch.conditions import LaunchConfigurationEquals
 from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch_ros.substitutions import FindPackageShare
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -111,10 +110,6 @@ def launch_setup(context, *args, **kwargs):
                         )
                     ]
                 ),
-                launch_arguments={
-                    "frame_id": device_link_name(robot_namespace, camera_name),
-                    "configuration_file_path": complete_configuration_yaml_file,
-                }.items(),
             )
         )
 

@@ -27,27 +27,14 @@ from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch_ros.substitutions import FindPackageShare
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
-
-def get_configuration(context):
-
-    configuration_file_path = LaunchConfiguration("configuration_file_path").perform(context)
-
-    with open(configuration_file_path, 'r') as f :
-       return  yaml.safe_load(f)
-
-
 def launch_setup(context, *args, **kwargs):
 
-    configuration = get_configuration(context)
-    frame_id = LaunchConfiguration("frame_id").perform(context)
     return []
 
 
 def generate_launch_description():
 
     declared_arguments = []
-    declared_arguments.append(DeclareLaunchArgument("frame_id"))
-    declared_arguments.append(DeclareLaunchArgument("configuration_file_path"))
 
     return LaunchDescription(
         declared_arguments + [OpaqueFunction(function=launch_setup)]
