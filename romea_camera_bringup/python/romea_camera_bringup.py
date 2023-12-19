@@ -34,6 +34,9 @@ class CameraMetaDescription:
     def get_driver_pkg(self):
         return self.meta_description.get("pkg", "driver")
 
+    def get_driver_video_device(self):
+        return self.meta_description.get("video_device", "driver")
+
     def get_type(self):
         return self.meta_description.get("type", "configuration")
 
