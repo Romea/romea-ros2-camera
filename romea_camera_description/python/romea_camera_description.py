@@ -143,7 +143,7 @@ def urdf(prefix, mode, name, type, model, user_configuration, user_geometry, ros
     )
 
     if mode == "simulation":
-        mode = mode +"_gazebo_classic"
+        mode += "_gazebo_classic"
 
     urdf_xml = xacro.process_file(
         xacro_file,

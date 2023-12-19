@@ -93,6 +93,13 @@
 
         <xacro:if value="${'simulation' in mode}">
           <xacro:include filename="$(find romea_camera_description)/urdf/camera.simulation.xacro" />
+            <xacro:camera_sensor_simulation
+              prefix="${prefix}"
+              mode="${mode}" 
+              name="${name}" 
+              link_name="${link_name}" 
+              configuration="${configuration}" 
+              ros_namespace="${ros_namespace}"/>
         </xacro:if>
 
     </xacro:macro>
