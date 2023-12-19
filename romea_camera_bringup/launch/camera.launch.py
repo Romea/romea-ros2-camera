@@ -19,7 +19,7 @@ from launch.actions import (
     IncludeLaunchDescription,
     DeclareLaunchArgument,
     OpaqueFunction,
-    GroupAction
+    GroupAction,
 )
 
 from launch_ros.actions import PushRosNamespace
@@ -32,23 +32,25 @@ from romea_common_description import save_device_specifications_file
 from romea_camera_bringup import CameraMetaDescription, get_sensor_configuration
 from romea_camera_description import get_camera_complete_configuration
 
+
 def get_mode(context):
     mode = LaunchConfiguration("mode").perform(context)
     if mode == "simulation":
-       return "simulation_gazebo_classic"
-    else :
-       return mode 
+        return "simulation_gazebo_classic"
+    else:
+        return mode
+
 
 def get_robot_namespace(context):
     return LaunchConfiguration("robot_namespace").perform(context)
 
+
 def get_meta_description(context):
 
-    meta_description_file_path = LaunchConfiguration(
-        "meta_description_file_path"
-    ).perform(context)
+    meta_description_file_path = LaunchConfiguration("meta_description_file_path").perform(context)
 
     return CameraMetaDescription(meta_description_file_path)
+
 
 def launch_setup(context, *args, **kwargs):
 
@@ -62,16 +64,17 @@ def launch_setup(context, *args, **kwargs):
     user_configuration = get_sensor_configuration(meta_description)
 
     complete_configuration = get_camera_complete_configuration(
-        meta_description.get_type(), meta_description.get_model(), user_configuration)
+        meta_description.get_type(), meta_description.get_model(), user_configuration
+    )
 
     complete_configuration_yaml_file = save_device_specifications_file(
         robot_urdf_prefix(robot_namespace), camera_name, complete_configuration
     )
 
-    actions=[
+    actions = [
         PushRosNamespace(robot_namespace),
         PushRosNamespace(camera_namespace),
-        PushRosNamespace(camera_name)
+        PushRosNamespace(camera_name),
     ]
 
     if mode == "live" and meta_description.get_driver_pkg() is not None:
@@ -96,7 +99,7 @@ def launch_setup(context, *args, **kwargs):
             )
         )
 
-    if mode == "simulation_gazebo" :
+    if mode == "simulation_gazebo":
         actions.append(
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
@@ -124,14 +127,8 @@ def generate_launch_description():
 
     declared_arguments.append(DeclareLaunchArgument("meta_description_file_path"))
 
-    declared_arguments.append(
-        DeclareLaunchArgument("robot_namespace", default_value="")
-    )
+    declared_arguments.append(DeclareLaunchArgument("robot_namespace", default_value=""))
 
-    declared_arguments.append(
-        DeclareLaunchArgument("mode", default_value="live")
-    )
+    declared_arguments.append(DeclareLaunchArgument("mode", default_value="live"))
 
-    return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)]
-    )
+    return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])
