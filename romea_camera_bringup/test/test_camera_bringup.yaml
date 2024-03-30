@@ -1,9 +1,10 @@
 name: "camera"
 namespace: "ns"
-# driver:
-#   pkg: "sick_scan"
-#   ip: "192.168.1.112"
-#   port: 2112
+driver:
+  package: usb_cam
+  executable: usb_cam_node_exe
+  parameters:
+    "video_device": /dev/video0
 configuration:
   type: axis
   model: p1346

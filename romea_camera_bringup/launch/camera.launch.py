@@ -32,6 +32,10 @@ from romea_common_description import save_device_specifications_file
 from romea_camera_bringup import CameraMetaDescription, get_sensor_configuration
 from romea_camera_description import get_camera_complete_configuration
 
+import tempfile
+import yaml
+import os
+
 
 def get_mode(context):
     mode = LaunchConfiguration("mode").perform(context)
@@ -52,6 +56,14 @@ def get_meta_description(context):
     return CameraMetaDescription(meta_description_file_path)
 
 
+def generate_yaml_temp_file(prefix: str, data: dict):
+    fd, filepath = tempfile.mkstemp(prefix=prefix + "_", suffix=".yaml")
+    with os.fdopen(fd, "w") as file:
+        file.write(yaml.safe_dump(data))
+
+    return filepath
+
+
 def launch_setup(context, *args, **kwargs):
 
     mode = get_mode(context)
@@ -63,12 +75,12 @@ def launch_setup(context, *args, **kwargs):
 
     user_configuration = get_sensor_configuration(meta_description)
 
-    complete_configuration = get_camera_complete_configuration(
+    camera_configuration = get_camera_complete_configuration(
         meta_description.get_type(), meta_description.get_model(), user_configuration
     )
 
-    complete_configuration_yaml_file = save_device_specifications_file(
-        robot_urdf_prefix(robot_namespace), camera_name, complete_configuration
+    camera_configuration_file_path = save_device_specifications_file(
+        robot_urdf_prefix(robot_namespace), camera_name, camera_configuration
     )
 
     actions = [
@@ -77,7 +89,12 @@ def launch_setup(context, *args, **kwargs):
         PushRosNamespace(camera_name),
     ]
 
-    if mode == "live" and meta_description.get_driver_pkg() is not None:
+    if mode == "live" and meta_description.get_driver_package() is not None:
+        driver_configuration = meta_description.get_driver_parameters()
+        driver_configuration_file_path = generate_yaml_temp_file(
+            "camera_driver", driver_configuration
+        )
+
         actions.append(
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
@@ -86,15 +103,16 @@ def launch_setup(context, *args, **kwargs):
                             [
                                 FindPackageShare("romea_camera_bringup"),
                                 "launch",
-                                "drivers/" + meta_description.get_driver_pkg() + ".launch.py",
+                                "drivers/" + meta_description.get_driver_package() + ".launch.py",
                             ]
                         )
                     ]
                 ),
                 launch_arguments={
-                    "video_device": meta_description.get_driver_video_device(),
+                    "executable": meta_description.get_driver_executable(),
                     "frame_id": device_link_name(robot_namespace, camera_name),
-                    "configuration_file_path": complete_configuration_yaml_file,
+                    "driver_configuration_file_path": driver_configuration_file_path,
+                    "camera_configuration_file_path": camera_configuration_file_path,
                 }.items(),
             )
         )
@@ -112,7 +130,7 @@ def launch_setup(context, *args, **kwargs):
                             ]
                         )
                     ]
-                ),
+                )
             )
         )
 

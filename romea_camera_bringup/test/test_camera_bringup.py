@@ -15,7 +15,7 @@
 
 import os
 import pytest
-from numpy import deg2rad, radians
+from numpy import radians
 
 from romea_camera_bringup import CameraMetaDescription
 
@@ -34,13 +34,21 @@ def test_get_namespace(meta_description):
     assert meta_description.get_namespace() == "ns"
 
 
-# def test_has_driver_configuration(meta_description):
-#     assert meta_description.has_driver_configuration() is True
+def test_has_driver_configuration(meta_description):
+    assert meta_description.has_driver_configuration() is True
 
 
-# def test_get_driver_pkg(meta_description):
-#     assert meta_description.get_driver_pkg() == "sick_scan"
+def test_get_driver_package(meta_description):
+    assert meta_description.get_driver_package() == "usb_cam"
 
+
+def test_get_driver_executable(meta_description):
+    assert meta_description.get_driver_executable() == "usb_cam_node_exe"
+
+
+def test_get_driver_parameters(meta_description):
+    parameters = meta_description.get_driver_parameters()
+    assert parameters["video_device"] == "/dev/video0"
 
 
 def test_get_type(meta_description):
@@ -60,10 +68,11 @@ def test_get_resolution_(meta_description):
 
 
 def test_get_horizontal_fov(meta_description):
-    assert meta_description.get_horizontal_fov() == None
+    assert meta_description.get_horizontal_fov() is None
+
 
 def test_get_video_format(meta_description):
-    assert meta_description.get_video_format() == None
+    assert meta_description.get_video_format() is None
 
 
 def test_get_parent_link(meta_description):

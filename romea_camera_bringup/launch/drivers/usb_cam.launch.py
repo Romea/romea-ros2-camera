@@ -19,35 +19,48 @@ from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
 
-def get_configuration(context):
 
-    configuration_file_path = LaunchConfiguration("configuration_file_path").perform(context)
+def get_camera_configuration(context):
 
-    with open(configuration_file_path, 'r') as f :
-       return  yaml.safe_load(f)
+    configuration_file_path = LaunchConfiguration("camera_configuration_file_path").perform(
+        context
+    )
+
+    with open(configuration_file_path, "r") as f:
+        return yaml.safe_load(f)
+
+
+def get_driver_configuration(context):
+
+    configuration_file_path = LaunchConfiguration("driver_configuration_file_path").perform(
+        context
+    )
+
+    with open(configuration_file_path, "r") as f:
+        return yaml.safe_load(f)
 
 
 def launch_setup(context, *args, **kwargs):
 
-    configuration = get_configuration(context)
-    video_device = LaunchConfiguration("video_device").perform(context)
+    camera_configuration = get_camera_configuration(context)
+    driver_configuration = get_driver_configuration(context)
+    executable = LaunchConfiguration("executable").perform(context)
     frame_id = LaunchConfiguration("frame_id").perform(context)
 
     driver = LaunchDescription()
 
-    print(video_device)
-
     parameters = {
-        "video_device": video_device,
         "frame_id": frame_id,
-        "frame_rate": configuration["frame_rate"],
-        "image_height": configuration["image_height"],
-        "image_width": configuration["image_width"],
+        "frame_rate": camera_configuration["frame_rate"],
+        "image_height": camera_configuration["image_height"],
+        "image_width": camera_configuration["image_width"],
     }
+
+    parameters.update(driver_configuration)
 
     driver_node = Node(
         package="usb_cam",
-        executable="usb_cam_node_exe",
+        executable=executable,
         output="screen",
         name="driver",
         parameters=[parameters],
@@ -77,10 +90,9 @@ def launch_setup(context, *args, **kwargs):
 def generate_launch_description():
 
     declared_arguments = []
-    declared_arguments.append(DeclareLaunchArgument("video_device"))
+    declared_arguments.append(DeclareLaunchArgument("executable"))
     declared_arguments.append(DeclareLaunchArgument("frame_id"))
-    declared_arguments.append(DeclareLaunchArgument("configuration_file_path"))
+    declared_arguments.append(DeclareLaunchArgument("driver_configuration_file_path"))
+    declared_arguments.append(DeclareLaunchArgument("camera_configuration_file_path"))
 
-    return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)]
-    )
+    return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])

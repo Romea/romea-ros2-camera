@@ -17,6 +17,7 @@ import os
 import pytest
 import subprocess
 
+
 from romea_camera_bringup import urdf_description
 from ament_index_python import get_package_prefix
 import xml.etree.ElementTree as ET
