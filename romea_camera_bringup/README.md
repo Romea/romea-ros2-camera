@@ -43,7 +43,10 @@ Example :
 ```yaml
   name: "camera"  # name of the camera given by user
   driver: # camera driver configuration
-    pkg: TODO(Jean)  
+    package: usb_cam # driver ros2 package
+    executable: usb_cam_node_exe # node to be launch
+    parameters: # parameter of driver node
+      "video_device": /dev/video0
  configuration: # camera basic specifications
     type: axis  #  type of camera
     model: p146  # model of camera
