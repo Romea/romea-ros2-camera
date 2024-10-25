@@ -1,8 +1,10 @@
+# romea_camera_bringup #
+
 # 1) Overview #
 
 The romea_camera_bringup package provides  : 
 
- - launch files able to launch ros2 camera drivers according a meta-description file provided by user (see next section for camera meta-description file overview), supported drivers are :
+ - **Launch files** able to launch ros2 camera drivers according a meta-description file provided by user (see next section for camera meta-description file overview), supported drivers are :
 
    - [???](TODO(Jean))
    - [???](TODO(Jean))
@@ -18,9 +20,9 @@ The romea_camera_bringup package provides  :
    - *robot_namespace* is the name of the robot 
    - *meta_description_file_path* is the absolute path of meta-description file    
 
- - a python module able to load and parse camera meta-description file as well as to create URDF description of the camera according a given meta-description.
+ - A **Python module** able to load and parse camera meta-description file as well as to create URDF description of the camera according a given meta-description.
 
- - a ros2 python executable able to create camera URDF description via command line according a given meta-description file  :
+ - A **ROS2 Python executable** able to create camera URDF description via command line according a given meta-description file  :
 
   ```console
   ros2 run romea_camera_bringup urdf_description.py robot_namespace:robot meta_description_file_path:/path_to_file/meta_description_file.yaml > camera.urdf`
@@ -37,7 +39,13 @@ The romea_camera_bringup package provides  :
 
 # 2) Camera meta-description #
 
-As seen below camera meta-description file is a yaml file constituted by five items. The first item is the name of sensor defined by user. The second one is the configuration of ROS2 driver used to control camera (see section 4 for more explanations). The third item provides basics specifications of the camera and the fourth item specifies where the camera is located on the robot, these informations will be used to create URDF description and by user to configure its algorithms.  Finally, the last item gives the topics to be recorded into the ROS bag during experiments or simulation. Thanks to remappings written into launch files, camera topics are always the same names for each drivers or simulator plugins.       
+The camera meta-description file is a YAML file that consists of five items:
+- name: Specifies the user-defined camera name.
+- driver: Specifies the configuration for the ROS2 driver controlling the camera.
+- configuration: Defines basic specifications of the camera.
+- geometry: Defines position and orientation of the camera on the robot.
+- records: Topics to be recorded in the ROS bag during experiments or simulations. Remappings ensure the GPS topics have consistent names across drivers and simulation.
+
 
 Example :
 ```yaml
@@ -65,13 +73,13 @@ records: # topic to be recorded
 
 # 4) Supported camera models
 
-Supported camera are listed in the following table :
+The supported camera models are listed below:
 
 |  type  |   model    |
 | :----: | :--------: |
 | axis   |   p1456    |
 
-You can find specifications of each camera in config directory of romea_camera_description package.
+For detailed specifications, refer to the config directory within the romea_camera_description package.
 
 # 5) Supported camera ROS2 drivers
 
