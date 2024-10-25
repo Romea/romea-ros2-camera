@@ -1,41 +1,41 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
 
-    <xacro:macro name="camera_sensor_simulation" 
-      params="prefix mode name link_name configuration ros_namespace">
+  <xacro:macro name="camera_sensor_simulation"
+    params="prefix mode name link_name configuration ros_namespace">
 
-        <xacro:property name="image_width"
-          value="${configuration['image_width']}" />
-        <xacro:property name="image_height"
-          value="${configuration['image_height']}" />
-        <xacro:property name="horizontal_fov"
-          value="${configuration['horizontal_fov']}" />
-        <xacro:property name="frame_rate"
-          value="${configuration['frame_rate']}" />
+    <xacro:property name="image_width"
+      value="${configuration['image_width']}" />
+    <xacro:property name="image_height"
+      value="${configuration['image_height']}" />
+    <xacro:property name="horizontal_fov"
+      value="${configuration['horizontal_fov']}" />
+    <xacro:property name="frame_rate"
+      value="${configuration['frame_rate']}" />
 
-       <xacro:if value="${'gazebo' in mode}">
-        <gazebo reference="${link_name}">
-          <material>Gazebo/Purple</material>  
+    <xacro:if value="${'gazebo' in mode}">
+      <gazebo reference="${link_name}">
+        <material>Gazebo/Purple</material>
 
-          <sensor type="camera" name="${prefix}${name}">
-            <update_rate>${frame_rate}</update_rate>
-            <topic>${ros_namespace}/image_raw</topic>
-            <gz_frame_id>${link_name}</gz_frame_id>  <!-- used only with gazebo 6 or lower -->
-            <ignition_frame_id>${link_name}</ignition_frame_id> <!-- used by gazebo 7 or higher-->
-            
-            <camera>
-              <pose>0 0 0 0 0 0</pose>
-              <horizontal_fov>${horizontal_fov}</horizontal_fov>
-              <image>
-                <width>${image_width} </width>
-                <height>${image_height}</height>
-                <format>R8G8B8</format>
-              </image>
-              <clip>
-                <near>0.01</near>
-                <far>100</far>
-              </clip>
-              <!-- <noise>
+        <sensor type="camera" name="${prefix}${name}">
+          <update_rate>${frame_rate}</update_rate>
+          <topic>${ros_namespace}/image_raw</topic>
+          <gz_frame_id>${link_name}</gz_frame_id>  <!-- used only with gazebo 6 or lower -->
+          <ignition_frame_id>${link_name}</ignition_frame_id> <!-- used by gazebo 7 or higher-->
+
+          <camera>
+            <pose>0 0 0 0 0 0</pose>
+            <horizontal_fov>${horizontal_fov}</horizontal_fov>
+            <image>
+              <width>${image_width} </width>
+              <height>${image_height}</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.01</near>
+              <far>100</far>
+            </clip>
+            <!-- <noise>
                 <type>gaussian</type>
                 <mean>0.0</mean>
                 <stddev>0.007</stddev>
@@ -48,30 +48,30 @@
                 <p2>0.0</p2>
                 <center>0.5 0.5</center>
               </distortion> -->
-            </camera>
+          </camera>
 
-            <xacro:if value="${'classic' in mode}">
-              <plugin name="driver" filename="libgazebo_ros_camera.so">
-                  <ros>
-                    <namespace>${ros_namespace}</namespace>
-                    <remapping>camera/image_raw:=image_raw</remapping>
-                    <remapping>camera/camera_info:=camera_info</remapping>
-                    <remapping>camera/image_raw/compressed:=image_raw/compressed</remapping>
-                    <remapping>camera/image_raw/compressedDepth:=image_raw/compressedDepth</remapping>
-                    <remapping>camera/image_raw/theora:=image_raw/theora</remapping>
-                  </ros>
-                  <camera_name>camera</camera_name>
-                  <hack_baseline>0.07</hack_baseline>
-              </plugin>
-            </xacro:if> 
+          <xacro:if value="${'classic' in mode}">
+            <plugin name="driver" filename="libgazebo_ros_camera.so">
+              <ros>
+                <namespace>${ros_namespace}</namespace>
+                <remapping>camera/image_raw:=image_raw</remapping>
+                <remapping>camera/camera_info:=camera_info</remapping>
+                <remapping>camera/image_raw/compressed:=image_raw/compressed</remapping>
+                <remapping>camera/image_raw/compressedDepth:=image_raw/compressedDepth</remapping>
+                <remapping>camera/image_raw/theora:=image_raw/theora</remapping>
+              </ros>
+              <camera_name>camera</camera_name>
+              <hack_baseline>0.07</hack_baseline>
+            </plugin>
+          </xacro:if>
 
-          </sensor>
-        </gazebo>
-      </xacro:if>
+        </sensor>
+      </gazebo>
+    </xacro:if>
 
-      <xacro:if value="${'isaac' in mode}">
-        <!-- add description of sensor and ros_bridge for isac sim-->
-      </xacro:if>
+    <xacro:if value="${'isaac' in mode}">
+      <!-- add description of sensor and ros_bridge for isac sim-->
+    </xacro:if>
 
-    </xacro:macro>
+  </xacro:macro>
 </robot>
