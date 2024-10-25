@@ -1,16 +1,16 @@
 # romea_ros2_camera #
 
-This stack contains several ROS2 packages for working with camera sensors, both in real-world applications and simulations. For more detailed information, please refer to the README files of each individual package.
+This project contains several ROS2 packages for working with camera sensors, both in real-world applications and simulations. For more detailed information, please refer to the README files of each individual package.
 
 ## **Usage**
 
 1. create a ROS workspace
 2. cd worskpace
 3. mkdir src
-4. wget https://raw.githubusercontent.com/Romea/romea-ros2-gps/refs/heads/main/romea_gps_public.repos
-5. vcs import src < romea_gps_public.repos
+4. wget https://raw.githubusercontent.com/Romea/romea-ros2-rgbd-camera/refs/heads/main/romea_camera_public.repos
+5. vcs import src < romea_camera_public.repos
 6. colcon build
-7. see bringup package to launch gps
+7. see bringup package to launch camera
 
 ## **Contributing**
 
