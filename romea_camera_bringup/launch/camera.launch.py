@@ -89,7 +89,7 @@ def launch_setup(context, *args, **kwargs):
         PushRosNamespace(camera_name),
     ]
 
-    if mode == "live" and meta_description.get_driver_package() is not None:
+    if mode == "live" and meta_description.has_driver_configuration():
         driver_configuration = meta_description.get_driver_parameters()
         driver_configuration_file_path = generate_yaml_temp_file(
             "camera_driver", driver_configuration
