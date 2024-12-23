@@ -18,7 +18,7 @@ import pytest
 import subprocess
 
 
-from romea_camera_bringup import urdf_description
+from romea_camera_meta_bringup import urdf_description
 from ament_index_python import get_package_prefix
 import xml.etree.ElementTree as ET
 
@@ -32,7 +32,6 @@ def urdf():
     )
 
     meta_description_file_path = os.path.join(os.getcwd(), "test_camera_bringup.yaml")
-
 
     return ET.fromstring(
         subprocess.check_output(

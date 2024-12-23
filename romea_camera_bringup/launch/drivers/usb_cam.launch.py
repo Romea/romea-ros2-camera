@@ -20,50 +20,25 @@ from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
 
 
-def get_camera_configuration(context):
-
-    configuration_file_path = LaunchConfiguration("camera_configuration_file_path").perform(
-        context
-    )
-
-    with open(configuration_file_path, "r") as f:
-        return yaml.safe_load(f)
-
-
-def get_driver_configuration(context):
-
-    configuration_file_path = LaunchConfiguration("driver_configuration_file_path").perform(
-        context
-    )
-
-    with open(configuration_file_path, "r") as f:
-        return yaml.safe_load(f)
-
-
 def launch_setup(context, *args, **kwargs):
 
-    camera_configuration = get_camera_configuration(context)
-    driver_configuration = get_driver_configuration(context)
     executable = LaunchConfiguration("executable").perform(context)
-    frame_id = LaunchConfiguration("frame_id").perform(context)
+    executable_namespace = LaunchConfiguration("executable_namespace").perform(context)
+    configuration_file_path = LaunchConfiguration("configuration_file_path").perform(context)
 
     driver = LaunchDescription()
 
-    parameters = {
-        "frame_id": frame_id,
-        "frame_rate": camera_configuration["frame_rate"],
-        "image_height": camera_configuration["image_height"],
-        "image_width": camera_configuration["image_width"],
-    }
-
-    parameters.update(driver_configuration)
+    print(f'config_path: {configuration_file_path}')
+    with open(configuration_file_path, 'r') as file:
+        config_parameters = yaml.safe_load(file)
 
     driver_node = Node(
         package="usb_cam",
         executable=executable,
         output="screen",
         name="driver",
-        parameters=[parameters],
+        namespace=executable_namespace,
+        parameters=[config_parameters],
     )
 
     driver.add_action(driver_node)
@@ -71,28 +46,13 @@ def launch_setup(context, *args, **kwargs):
     return [driver]
 
 
-#   this->declare_parameter("camera_name", "default_cam");
-#   this->declare_parameter("pixel_format", "yuyv");
-#   this->declare_parameter("av_device_format", "YUV422P");
-#   this->declare_parameter("brightness", 50);  // 0-255, -1 "leave alone"
-#   this->declare_parameter("contrast", -1);    // 0-255, -1 "leave alone"
-#   this->declare_parameter("saturation", -1);  // 0-255, -1 "leave alone"
-#   this->declare_parameter("sharpness", -1);   // 0-255, -1 "leave alone"
-#   this->declare_parameter("gain", -1);        // 0-100?, -1 "leave alone"
-#   this->declare_parameter("auto_white_balance", true);
-#   this->declare_parameter("white_balance", 4000);
-#   this->declare_parameter("autoexposure", true);
-#   this->declare_parameter("exposure", 100);
-#   this->declare_parameter("autofocus", false);
-#   this->declare_parameter("focus", -1);  // 0-255, -1 "leave alone"
-
-
 def generate_launch_description():
 
-    declared_arguments = []
-    declared_arguments.append(DeclareLaunchArgument("executable"))
-    declared_arguments.append(DeclareLaunchArgument("frame_id"))
-    declared_arguments.append(DeclareLaunchArgument("driver_configuration_file_path"))
-    declared_arguments.append(DeclareLaunchArgument("camera_configuration_file_path"))
+    declared_arguments = [
+        DeclareLaunchArgument("executable"),
+        DeclareLaunchArgument("executable_namespace", default_value=""),
+        DeclareLaunchArgument("component_container", default_value=""),
+        DeclareLaunchArgument("configuration_file_path"),
+    ]
 
     return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])

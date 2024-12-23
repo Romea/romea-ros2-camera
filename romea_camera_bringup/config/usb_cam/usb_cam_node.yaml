@@ -1,0 +1,17 @@
+video_device: dev/video0
+framerate: 30.0
+image_height: 480
+image_width: 640
+pixel_format: yuyv
+# av_device_format: YUV422P;
+brightness: 50 # 0-255, -1 leave alone
+contrast: -1 # 0-255, -1 leave alone
+saturation: -1 # 0-255, -1 leave alone
+sharpness: -1 # 0-255, -1 leave alone
+gain: -1 # 0-100, -1 leave alone
+auto_white_balance: true # optional true by default
+white_balance: 4000 # set white balance if auto_white_balance is equal to false
+autoexposure: true # optional true by default
+exposure: 100 # set white balance if autoexposure is equal to false
+autofocus: false # optional false by default
+focus: -1 # 0-255, -1 leave alone

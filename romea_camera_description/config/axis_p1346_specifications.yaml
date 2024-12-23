@@ -1,9 +1,9 @@
 horizontal_fov: # degree
-   default: 72 
+   default: 72
    range: [27, 72]
 resolution:
    default: 1280x720
-   list: [2560x1920,2048x1536,1920x1080,1280x720,800x600,640x480]
+   list: [2560x1920, 2048x1536, 1920x1080, 1280x720, 800x600, 640x480]
 frame_rate: # hz
    640x480: 30
    800x600: 30
@@ -20,4 +20,4 @@ video_mode:
    2560x1920: 5MP
 video_format:
    default: h264
-   list: [h264,mjpeg]
+   list: [h264, mjpeg]

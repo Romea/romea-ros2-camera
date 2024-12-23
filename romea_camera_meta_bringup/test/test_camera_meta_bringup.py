@@ -17,12 +17,12 @@ import os
 import pytest
 from numpy import radians
 
-from romea_camera_bringup import CameraMetaDescription
+from romea_camera_meta_bringup import CameraMetaDescription
 
 
 @pytest.fixture(scope="module")
 def meta_description():
-    meta_description_file_path = os.path.join(os.getcwd(), "test_camera_bringup.yaml")
+    meta_description_file_path = os.path.join(os.getcwd(), "test_camera_meta_bringup.yaml")
     return CameraMetaDescription(meta_description_file_path)
 
 

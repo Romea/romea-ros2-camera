@@ -90,13 +90,6 @@ def get_camera_specifications(camera_type, camera_model):
     return get_device_specifications("camera", camera_type, camera_model)
 
 
-def get_camera_complete_configuration(camera_type, camera_model, user_configuration):
-    if camera_type == "axis":
-        return get_axis_complete_configuration(camera_model, user_configuration)
-
-    raise LookupError("Cannot get camera configuration")
-
-
 def get_axis_complete_configuration(camera_model, user_configuration):
 
     specifications = get_camera_specifications("axis", camera_model)
@@ -128,6 +121,13 @@ def get_axis_complete_configuration(camera_model, user_configuration):
     )
 
     return configuration
+
+
+def get_camera_complete_configuration(camera_type, camera_model, user_configuration):
+    if camera_type == "axis":
+        return get_axis_complete_configuration(camera_model, user_configuration)
+
+    raise LookupError("Cannot get camera configuration")
 
 
 def urdf(prefix, mode, name, type, model, user_configuration, user_geometry, ros_namespace):

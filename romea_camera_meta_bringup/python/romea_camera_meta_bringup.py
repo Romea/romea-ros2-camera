@@ -113,6 +113,21 @@ def get_sensor_configuration(meta_description, ns=None):
     }
 
 
+def driver_executable_parameters(executable, driver_configuration, camera_configuration, frame_id):
+    parameters = driver_configuration
+    parameters["frame_id"] = frame_id
+
+    if executable == "usb_cam_node":
+        parameters["framerate"] = camera_configuration("frame_rate")
+        parameters["image_height"] = camera_configuration("image_height")
+        parameters["image_width"] = camera_configuration("image_width")
+    else:
+        # TODO (add other drivers)
+        pass
+
+    return parameters
+
+
 def urdf_description(robot_namespace, mode, meta_description_file_path):
 
     meta_description = CameraMetaDescription(meta_description_file_path)
