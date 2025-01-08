@@ -14,7 +14,7 @@
 
 
 from romea_common_bringup import MetaDescription, robot_urdf_prefix, device_namespace
-from romea_camera_description import get_camera_specifications, get_camera_geometry, urdf
+import romea_camera_description
 from numpy import radians
 
 
@@ -46,6 +46,9 @@ class CameraMetaDescription:
     def get_model(self):
         return self.meta_description.get("model", "configuration")
 
+    def get_configuration(self, ns=None):
+        return self.meta_description.get("configuration")
+
     # perhaps add get_configuration_parameter in MetaDescription class
     def get_configuration_parameter_or(self, parameter_name, ns=None, default_value=None):
         if ns is None:
@@ -63,7 +66,10 @@ class CameraMetaDescription:
         return self.get_configuration_parameter_or("horizontal_fov", ns, None)
 
     def get_video_format(self, ns=None):
-        return self.get_configuration_parameter_or("horizontal_fov", ns, None)
+        return self.get_configuration_parameter_or("video_format", ns, None)
+
+    def get_geometry(self, ns=None):
+        return self.meta_description.get("geometry")
 
     def get_parent_link(self):
         return self.meta_description.get("parent_link", "geometry")
@@ -89,28 +95,20 @@ def load_meta_description(meta_description_file_path):
 
 
 def get_sensor_specifications(meta_description):
-    return get_camera_specifications(meta_description.get_type(), meta_description.get_model())
+    return romea_camera_description.get_camera_specifications(
+        meta_description.get_type(), meta_description.get_model()
+    )
 
 
 def get_sensor_geometry(meta_description):
-    return get_camera_geometry(meta_description.get_type(), meta_description.get_model())
+    return romea_camera_description.get_camera_geometry(
+        meta_description.get_type(), meta_description.get_model()
+    )
 
-
-def get_sensor_location(meta_description):
-    return {
-        "parent_link": meta_description.get_parent_link(),
-        "xyz": meta_description.get_xyz(),
-        "rpy": meta_description.get_rpy_rad(),
-    }
-
-
-def get_sensor_configuration(meta_description, ns=None):
-    return {
-        "frame_rate": meta_description.get_frame_rate(ns),
-        "resolution": meta_description.get_resolution(ns),
-        "horizontal_fov": meta_description.get_horizontal_fov(ns),
-        "video_format": meta_description.get_video_format(ns),
-    }
+def get_complete_configuration(meta_description):
+    return romea_camera_description.get_complete_configuration(
+        meta_description.get_name(), meta_description.get_configuration()
+    )
 
 
 def driver_executable_parameters(executable, driver_configuration, camera_configuration, frame_id):
@@ -133,16 +131,16 @@ def urdf_description(robot_namespace, mode, meta_description_file_path):
     meta_description = CameraMetaDescription(meta_description_file_path)
 
     ros_namespace = device_namespace(
-        robot_namespace, meta_description.get_namespace(), meta_description.get_name()
+        robot_namespace, 
+        meta_description.get_namespace(), 
+        meta_description.get_name()
     )
 
-    return urdf(
+    return romea_camera_description.urdf(
         robot_urdf_prefix(robot_namespace),
         mode,
         meta_description.get_name(),
-        meta_description.get_type(),
-        meta_description.get_model(),
-        get_sensor_configuration(meta_description),
-        get_sensor_location(meta_description),
+        meta_description.get_configuration(),
+        meta_description.get_geometry(),
         ros_namespace,
     )

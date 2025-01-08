@@ -27,11 +27,11 @@ import xml.etree.ElementTree as ET
 def urdf():
 
     exe = (
-        get_package_prefix("romea_camera_bringup")
-        + "/lib/romea_camera_bringup/urdf_description.py"
+        get_package_prefix("romea_camera_meta_bringup")
+        + "/lib/romea_camera_meta_bringup/urdf_description.py"
     )
 
-    meta_description_file_path = os.path.join(os.getcwd(), "test_camera_bringup.yaml")
+    meta_description_file_path = os.path.join(os.getcwd(), "test_camera_meta_bringup.yaml")
 
     return ET.fromstring(
         subprocess.check_output(
@@ -52,13 +52,13 @@ def test_camera_name(urdf):
 
 def test_camera_position(urdf):
     print("xyz", urdf.find("joint/origin").get("xyz"))
-    assert urdf.find("joint/origin").get("xyz") == "1.0 2.0 3.0 "
+    assert urdf.find("joint/origin").get("xyz") == "1.0 2.0 3.0"
 
 
 def test_camera_orientation(urdf):
     assert (
         urdf.find("joint/origin").get("rpy")
-        == "0.06981317007977318 0.08726646259971647 0.10471975511965978"
+        == "0.06981317007977318 0.08726646259971647 0.10471975511965977"
     )
 
 

@@ -31,9 +31,6 @@
     name="$(arg name)"
     configuration="${configuration}"
     geometry="${geometry}"
-    xyz="$(arg xyz) "
-    rpy="$(arg rpy)"
-    parent_link="$(arg parent_link)"
     mesh_visual="$(arg mesh_visual)"
     ros_namespace="$(arg ros_namespace)" />
 

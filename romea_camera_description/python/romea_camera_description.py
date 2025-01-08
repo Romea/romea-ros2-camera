@@ -12,20 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import math
+
 import xacro
-
+import yaml
+import math
+from romea_common_description import DeviceConfiguration as Device
 from ament_index_python.packages import get_package_share_directory
-
-from romea_common_description import (
-    evaluate_parameter,
-    evaluate_parameter_from_list,
-    evaluate_parameter_from_range,
-    get_device_geometry_file_path,
-    get_device_geometry,
-    get_device_specifications,
-    save_device_specifications_file,
-)
 
 
 def image_width(resolution):
@@ -36,107 +28,76 @@ def image_height(resolution):
     return int(resolution.split("x")[1])
 
 
-def evaluate_camera_parameter(
-    camera_type, camera_model, specifications, user_configuration, parameter_name, key_value=None
-):
-    return evaluate_parameter(
-        "camera",
-        camera_type,
-        camera_model,
-        specifications,
-        user_configuration,
-        parameter_name,
-        key_value,
-    )
+def get_camera_specifications_file_path(type, model):
+    pkg_path = get_package_share_directory('romea_camera_description')
+    return f'{pkg_path}/config/{type}_{model}_specifications.yaml'
 
 
-def evaluate_camera_parameter_from_list(
-    camera_type, camera_model, specifications, user_configuration, parameter_name, key_value=None
-):
-    return evaluate_parameter_from_list(
-        "camera",
-        camera_type,
-        camera_model,
-        specifications,
-        user_configuration,
-        parameter_name,
-        key_value,
-    )
+def get_camera_specifications(type, model):
+    with open(get_camera_specifications_file_path(type, model)) as f:
+        return yaml.safe_load(f)
 
 
-def evaluate_camera_parameter_from_range(
-    camera_type, camera_model, specifications, user_configuration, parameter_name, key_value=None
-):
-    return evaluate_parameter_from_range(
-        "camera",
-        camera_type,
-        camera_model,
-        specifications,
-        user_configuration,
-        parameter_name,
-        key_value,
-    )
+def get_camera_geometry_file_path(type, model):
+    pkg_path = get_package_share_directory('romea_camera_description')
+    return f'{pkg_path}/config/{type}_{model}_geometry.yaml'
 
 
-def get_camera_geometry_file_path(camera_type, camera_model):
-    return get_device_geometry_file_path("camera", camera_type, camera_model)
+def get_lidar_geometry(type, model):
+    with open(get_camera_geometry_file_path(type, model)) as f:
+        return yaml.safe_load(f)
 
 
-def get_camera_geometry(camera_type, camera_model):
-    return get_device_geometry("camera", camera_type, camera_model)
+def get_camera_specification_units_file_path():
+    pkg_path = get_package_share_directory('romea_camera_description')
+    return f'{pkg_path}/config/specifications_units.yaml'
 
 
-def get_camera_specifications(camera_type, camera_model):
-    return get_device_specifications("camera", camera_type, camera_model)
+def get_camera_specification_units():
+    with open(get_camera_specification_units_file_path()) as f:
+        return yaml.safe_load(f)
 
 
-def get_axis_complete_configuration(camera_model, user_configuration):
+def get_camera_complete_configuration(camera_name, user_configuration):
 
-    specifications = get_camera_specifications("axis", camera_model)
+    type = user_configuration["type"]
+    model = user_configuration["model"]
+    camera_name = f'{type} {model} camera called {camera_name}'
+    specifications = get_camera_specifications(type, model)
+    specifications_units = get_camera_specification_units()
+
+    camera = Device(camera_name, specifications, user_configuration, specifications_units)
 
     configuration = {}
-    resolution = evaluate_camera_parameter_from_list(
-        "axis", camera_model, specifications, user_configuration, "resolution"
-    )
-
-    configuration["image_width"] = image_width(resolution)
-    configuration["image_height"] = image_height(resolution)
-
-    configuration["horizontal_fov"] = (
-        evaluate_camera_parameter_from_range(
-            "axis", camera_model, specifications, user_configuration, "horizontal_fov"
-        )
-        * math.pi
-        / 180.0
-    )
-
-    configuration["frame_rate"] = evaluate_camera_parameter(
-        "axis", camera_model, specifications, user_configuration, "frame_rate", resolution
-    )
-    # configuration["video_mode"] = evaluate_camera_parameter(
-    #     "axis", camera_model, specifications, user_configuration, "video_mode", resolution
-    # )
-    configuration["video_format"] = evaluate_camera_parameter_from_list(
-        "axis", camera_model, specifications, user_configuration, "video_format"
-    )
+    configuration["frame_rate"] = camera.get("frame_rate")
+    configuration["image_width"] = image_width(camera.get("resolution"))
+    configuration["image_height"] = image_height(camera.get("resolution"))
+    configuration["horizontal_fov"] = camera.get("horizontal_fov")
+    configuration["video_format"] = camera.get("video_format")
 
     return configuration
 
 
-def get_camera_complete_configuration(camera_type, camera_model, user_configuration):
-    if camera_type == "axis":
-        return get_axis_complete_configuration(camera_model, user_configuration)
+def save_camera_configuration(prefix, lidar_name, configuration):
+    configuration_file_path = '/tmp/' + prefix + lidar_name + '_specifications.yaml'
 
-    raise LookupError("Cannot get camera configuration")
+    with open(configuration_file_path, 'w') as f:
+        yaml.dump(configuration, f)
+
+    return configuration_file_path
 
 
-def urdf(prefix, mode, name, type, model, user_configuration, user_geometry, ros_namespace):
+def urdf(prefix, mode, camera_name, camera_description, camera_location, ros_namespace):
 
-    complete_configuration = get_camera_complete_configuration(type, model, user_configuration)
-    complete_configuration_yaml_file = save_device_specifications_file(
-        prefix, name, complete_configuration
+    configuration = get_camera_complete_configuration(camera_name, camera_description)
+    
+    configuration_yaml_file = save_camera_configuration(
+        prefix, camera_name, {**configuration, **camera_location}
     )
-    geometry_yaml_file = get_camera_geometry_file_path(type, model)
+
+    geometry_yaml_file = get_camera_geometry_file_path(
+        camera_description["type"], camera_description["model"]
+    )
 
     xacro_file = (
         get_package_share_directory("romea_camera_description") + "/urdf/camera.xacro.urdf"
@@ -150,14 +111,14 @@ def urdf(prefix, mode, name, type, model, user_configuration, user_geometry, ros
         mappings={
             "prefix": prefix,
             "mode": mode,
-            "name": name,
-            "type": type,
-            "model": model,
-            "sensor_config_yaml_file": complete_configuration_yaml_file,
+            "name": camera_name,
+            # "type": camera_description["type"],
+            # "model": camera_description["model"],
+            "sensor_config_yaml_file": configuration_yaml_file,
             "geometry_config_yaml_file": geometry_yaml_file,
-            "parent_link": user_geometry["parent_link"],
-            "xyz": " ".join(map(str, user_geometry["xyz"])),
-            "rpy": " ".join(map(str, user_geometry["rpy"])),
+            # "parent_link": camera_geometry["parent_link"],
+            # "xyz": " ".join(map(str, camera_geometry["xyz"])),
+            # "rpy": " ".join(map(str, camera_geometry["rpy"])),
             "mesh_visual": str(True),
             "ros_namespace": ros_namespace,
         },

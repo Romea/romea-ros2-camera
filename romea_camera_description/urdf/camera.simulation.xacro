@@ -9,7 +9,7 @@
     <xacro:property name="image_height"
       value="${configuration['image_height']}" />
     <xacro:property name="horizontal_fov"
-      value="${configuration['horizontal_fov']}" />
+      value="${configuration['horizontal_fov']/180.*pi}" />
     <xacro:property name="frame_rate"
       value="${configuration['frame_rate']}" />
 
@@ -27,7 +27,7 @@
             <pose>0 0 0 0 0 0</pose>
             <horizontal_fov>${horizontal_fov}</horizontal_fov>
             <image>
-              <width>${image_width} </width>
+              <width>${image_width}</width>
               <height>${image_height}</height>
               <format>R8G8B8</format>
             </image>

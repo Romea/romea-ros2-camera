@@ -23,26 +23,29 @@ def urdf_xml():
     prefix = "robot_"
     mode = "simulation"
     name = "camera"
-    type = "axis"
-    model = "p1346"
 
-    configuration={
+    description = {
+        "type": "axis",
+        "model": "p1346",
         "resolution": "1280x720",
         "frame_rate": 30,
         "horizontal_fov": None,
         "video_format": None,
     }
 
-    geometry ={
-        "parent_link" : "base_link",
-        "xyz" : [1.0, 2.0, 3.0],
-        "rpy" : [4.0, 5.0, 6.0],
+    location = {
+        "parent_link": "base_link",
+        "xyz": [1.0, 2.0, 3.0],
+        "rpy": [4.0, 5.0, 6.0],
     }
 
     ros_namespace = "ns"
 
-    print(urdf(prefix, mode, name, type, model, configuration, geometry, ros_namespace))
-    return ET.fromstring(urdf(prefix, mode, name, type, model, configuration, geometry, ros_namespace))
+    print(urdf(prefix, mode, name, description, location, ros_namespace))
+    with open('/tmp/camera_urdf', 'w') as file:
+        file.write(urdf(prefix, mode, name, description, location, ros_namespace))
+
+    return ET.fromstring(urdf(prefix, mode, name, description, location, ros_namespace))
 
 
 def test_camera_name(urdf_xml):
@@ -50,11 +53,14 @@ def test_camera_name(urdf_xml):
 
 
 def test_camera_position(urdf_xml):
-    assert urdf_xml.find("joint/origin").get("xyz") == "1.0 2.0 3.0 "
+    assert urdf_xml.find("joint/origin").get("xyz") == "1.0 2.0 3.0"
 
 
 def test_camera_orientation(urdf_xml):
-    assert urdf_xml.find("joint/origin").get("rpy") == "4.0 5.0 6.0"
+    assert (
+        urdf_xml.find("joint/origin").get("rpy")
+        == "0.06981317007977318 0.08726646259971647 0.10471975511965977"
+    )
 
 
 def test_camera_parent_link(urdf_xml):
@@ -63,6 +69,18 @@ def test_camera_parent_link(urdf_xml):
 
 def test_sensor_update_rate(urdf_xml):
     assert urdf_xml.find("gazebo/sensor/update_rate").text == "30"
+
+
+def test_gazebo_horizontal_fov(urdf_xml):
+    assert urdf_xml.find("gazebo/sensor/camera/horizontal_fov").text == "1.2566370614359172"
+
+
+def test_gazebo_image_width(urdf_xml):
+    assert urdf_xml.find("gazebo/sensor/camera/image/width").text == "1280"
+
+
+def test_gazebo_image_height(urdf_xml):
+    assert urdf_xml.find("gazebo/sensor/camera/image/height").text == "720"
 
 
 def test_plugin_namespace(urdf_xml):
