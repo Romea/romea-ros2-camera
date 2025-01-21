@@ -28,8 +28,12 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 from romea_common_bringup import device_link_name, device_namespace, robot_urdf_prefix
 from romea_common_description import save_device_specifications_file
-from romea_camera_meta_bringup import CameraMetaDescription, get_sensor_configuration , driver_executable_parameters
 from romea_camera_description import get_camera_complete_configuration
+from romea_camera_meta_bringup import (
+    CameraMetaDescription,
+    get_sensor_configuration,
+    driver_executable_parameters
+)
 
 import tempfile
 import yaml
@@ -74,7 +78,7 @@ def launch_setup(context, *args, **kwargs):
     camera_full_namespace = device_namespace(robot_namespace, camera_namespace, camera_name)
     camera_frame_id = device_link_name(robot_namespace, camera_name)
 
-    user_camera_configuration = get_sensor_configuration(meta_description)
+    user_camera_configuration = meta_description.get_configuration()
 
     camera_configuration = get_camera_complete_configuration(
         meta_description.get_type(), meta_description.get_model(), user_camera_configuration

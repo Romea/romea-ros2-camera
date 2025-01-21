@@ -105,6 +105,7 @@ def get_sensor_geometry(meta_description):
         meta_description.get_type(), meta_description.get_model()
     )
 
+
 def get_complete_configuration(meta_description):
     return romea_camera_description.get_complete_configuration(
         meta_description.get_name(), meta_description.get_configuration()
@@ -131,7 +132,7 @@ def urdf_description(robot_namespace, mode, meta_description_file_path):
     meta_description = CameraMetaDescription(meta_description_file_path)
 
     ros_namespace = device_namespace(
-        robot_namespace, 
+        robot_namespace,
         meta_description.get_namespace(), 
         meta_description.get_name()
     )
