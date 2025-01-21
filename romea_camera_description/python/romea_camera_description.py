@@ -78,22 +78,14 @@ def get_camera_complete_configuration(camera_name, user_configuration):
     return configuration
 
 
-def save_camera_configuration(prefix, lidar_name, configuration):
-    configuration_file_path = '/tmp/' + prefix + lidar_name + '_specifications.yaml'
-
-    with open(configuration_file_path, 'w') as f:
-        yaml.dump(configuration, f)
-
-    return configuration_file_path
-
-
 def urdf(prefix, mode, camera_name, camera_description, camera_location, ros_namespace):
 
     configuration = get_camera_complete_configuration(camera_name, camera_description)
-    
-    configuration_yaml_file = save_camera_configuration(
-        prefix, camera_name, {**configuration, **camera_location}
-    )
+
+    configuration_yaml_file = f'/tmp/{prefix}{camera_name}urdf_configuration.yaml'
+
+    with open(configuration_yaml_file, 'w') as f:
+        yaml.dump({**configuration, **camera_location}, f)
 
     geometry_yaml_file = get_camera_geometry_file_path(
         camera_description["type"], camera_description["model"]
