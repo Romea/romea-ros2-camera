@@ -61,6 +61,7 @@
                 <remapping>camera/image_raw/theora:=image_raw/theora</remapping>
               </ros>
               <camera_name>camera</camera_name>
+              <frame_name>${link_name}</frame_name>
               <hack_baseline>0.07</hack_baseline>
             </plugin>
           </xacro:if>
