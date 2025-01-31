@@ -44,7 +44,7 @@ def launch_setup(context, *args, **kwargs):
         "rpy": [0.0, 0.0, 1.0]
     }
 
-    ros_namespace = "robot/imu"
+    ros_namespace = "robot/camera"
 
     urdf_xml = ET.fromstring(urdf(prefix, mode, name, description, location, ros_namespace))
     child = ET.SubElement(urdf_xml, "link")
