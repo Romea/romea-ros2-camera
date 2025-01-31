@@ -25,7 +25,7 @@ def urdf_xml():
     name = "camera"
 
     description = {
-        "type": "axis",
+        "manufacturer": "axis",
         "model": "p1346",
         "resolution": "1280x720",
         "frame_rate": 30,

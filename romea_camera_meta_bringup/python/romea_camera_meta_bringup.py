@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-from romea_common_bringup import MetaDescription, robot_urdf_prefix, device_namespace
+from romea_common_meta_bringup import MetaDescription, robot_urdf_prefix, device_namespace
 import romea_camera_description
 from numpy import radians
 
@@ -40,8 +40,8 @@ class CameraMetaDescription:
     def get_driver_parameters(self):
         return self.meta_description.get("parameters", "driver")
 
-    def get_type(self):
-        return self.meta_description.get("type", "configuration")
+    def get_manufacturer(self):
+        return self.meta_description.get("manufacturer", "configuration")
 
     def get_model(self):
         return self.meta_description.get("model", "configuration")
@@ -96,13 +96,13 @@ def load_meta_description(meta_description_file_path):
 
 def get_sensor_specifications(meta_description):
     return romea_camera_description.get_camera_specifications(
-        meta_description.get_type(), meta_description.get_model()
+        meta_description.get_manufacturer(), meta_description.get_model()
     )
 
 
 def get_sensor_geometry(meta_description):
     return romea_camera_description.get_camera_geometry(
-        meta_description.get_type(), meta_description.get_model()
+        meta_description.get_manufacturer(), meta_description.get_model()
     )
 
 

@@ -51,8 +51,8 @@ def test_get_driver_parameters(meta_description):
     assert parameters["video_device"] == "/dev/video0"
 
 
-def test_get_type(meta_description):
-    assert meta_description.get_type() == "axis"
+def test_get_manufacturer(meta_description):
+    assert meta_description.get_manufacturer() == "axis"
 
 
 def test_get_model(meta_description):

@@ -15,7 +15,6 @@
 
 import xacro
 import yaml
-import math
 from romea_common_description import DeviceConfiguration as Device
 from ament_index_python.packages import get_package_share_directory
 
@@ -28,23 +27,23 @@ def image_height(resolution):
     return int(resolution.split("x")[1])
 
 
-def get_camera_specifications_file_path(type, model):
+def get_camera_specifications_file_path(manufacturer, model):
     pkg_path = get_package_share_directory('romea_camera_description')
-    return f'{pkg_path}/config/{type}_{model}_specifications.yaml'
+    return f'{pkg_path}/config/{manufacturer}_{model}_specifications.yaml'
 
 
-def get_camera_specifications(type, model):
-    with open(get_camera_specifications_file_path(type, model)) as f:
+def get_camera_specifications(manufacturer, model):
+    with open(get_camera_specifications_file_path(manufacturer, model)) as f:
         return yaml.safe_load(f)
 
 
-def get_camera_geometry_file_path(type, model):
+def get_camera_geometry_file_path(manufacturer, model):
     pkg_path = get_package_share_directory('romea_camera_description')
-    return f'{pkg_path}/config/{type}_{model}_geometry.yaml'
+    return f'{pkg_path}/config/{manufacturer}_{model}_geometry.yaml'
 
 
-def get_lidar_geometry(type, model):
-    with open(get_camera_geometry_file_path(type, model)) as f:
+def get_lidar_geometry(manufacturer, model):
+    with open(get_camera_geometry_file_path(manufacturer, model)) as f:
         return yaml.safe_load(f)
 
 
@@ -60,10 +59,10 @@ def get_camera_specification_units():
 
 def get_camera_complete_configuration(camera_name, user_configuration):
 
-    type = user_configuration["type"]
     model = user_configuration["model"]
-    camera_name = f'{type} {model} camera called {camera_name}'
-    specifications = get_camera_specifications(type, model)
+    manufacturer = user_configuration["manufacturer"]
+    camera_name = f'{manufacturer} {model} camera called {camera_name}'
+    specifications = get_camera_specifications(manufacturer, model)
     specifications_units = get_camera_specification_units()
 
     camera = Device(camera_name, specifications, user_configuration, specifications_units)
@@ -88,7 +87,7 @@ def urdf(prefix, mode, camera_name, camera_description, camera_location, ros_nam
         yaml.dump({**configuration, **camera_location}, f)
 
     geometry_yaml_file = get_camera_geometry_file_path(
-        camera_description["type"], camera_description["model"]
+        camera_description["manufacturer"], camera_description["model"]
     )
 
     xacro_file = (
@@ -104,13 +103,8 @@ def urdf(prefix, mode, camera_name, camera_description, camera_location, ros_nam
             "prefix": prefix,
             "mode": mode,
             "name": camera_name,
-            # "type": camera_description["type"],
-            # "model": camera_description["model"],
             "sensor_config_yaml_file": configuration_yaml_file,
             "geometry_config_yaml_file": geometry_yaml_file,
-            # "parent_link": camera_geometry["parent_link"],
-            # "xyz": " ".join(map(str, camera_geometry["xyz"])),
-            # "rpy": " ".join(map(str, camera_geometry["rpy"])),
             "mesh_visual": str(True),
             "ros_namespace": ros_namespace,
         },
