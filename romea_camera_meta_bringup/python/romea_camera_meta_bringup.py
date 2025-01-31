@@ -13,7 +13,12 @@
 # limitations under the License.
 
 
-from romea_common_meta_bringup import MetaDescription, robot_urdf_prefix, device_namespace
+from romea_common_meta_bringup import (
+    MetaDescription,
+    robot_urdf_prefix,
+    device_namespace,
+    device_link_name
+)
 import romea_camera_description
 from numpy import radians
 
@@ -107,19 +112,24 @@ def get_sensor_geometry(meta_description):
 
 
 def get_complete_configuration(meta_description):
-    return romea_camera_description.get_complete_configuration(
+    return romea_camera_description.get_camera_complete_configuration(
         meta_description.get_name(), meta_description.get_configuration()
     )
 
 
-def driver_executable_parameters(executable, driver_configuration, camera_configuration, frame_id):
-    parameters = driver_configuration
+def get_complete_driver_parameters(meta_description, robot_namespace):
+    camera_configuration = get_complete_configuration(meta_description)
+    frame_id = device_link_name(robot_namespace, meta_description.get_name())
+
+    executable = meta_description.get_driver_executable()
+    parameters = meta_description.get_driver_parameters()
     parameters["frame_id"] = frame_id
 
-    if executable == "usb_cam_node":
-        parameters["framerate"] = camera_configuration("frame_rate")
-        parameters["image_height"] = camera_configuration("image_height")
-        parameters["image_width"] = camera_configuration("image_width")
+    print(camera_configuration)
+    if executable == "usb_cam_node_exe":
+        parameters["framerate"] = camera_configuration["frame_rate"]
+        parameters["image_height"] = camera_configuration["image_height"]
+        parameters["image_width"] = camera_configuration["image_width"]
     else:
         # TODO (add other drivers)
         pass

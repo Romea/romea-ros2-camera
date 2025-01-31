@@ -1,0 +1,11 @@
+name: "camera"
+driver:
+  package: usb_cam
+  executable: usb_cam_node_exe
+  parameters:
+    "video_device": /dev/video0
+configuration:
+  type: axis
+  model: p1346
+  frame_rate: 30 # hz
+  resolution: 1280x720 # width x height
