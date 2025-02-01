@@ -42,7 +42,7 @@ def get_camera_geometry_file_path(manufacturer, model):
     return f'{pkg_path}/config/{manufacturer}_{model}_geometry.yaml'
 
 
-def get_lidar_geometry(manufacturer, model):
+def get_camera_geometry(manufacturer, model):
     with open(get_camera_geometry_file_path(manufacturer, model)) as f:
         return yaml.safe_load(f)
 
