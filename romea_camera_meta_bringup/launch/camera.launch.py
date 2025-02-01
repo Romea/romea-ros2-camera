@@ -26,14 +26,8 @@ from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch_ros.substitutions import FindPackageShare
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
-from romea_common_bringup import device_link_name, device_namespace, robot_urdf_prefix
-from romea_common_description import save_device_specifications_file
-from romea_camera_description import get_camera_complete_configuration
-from romea_camera_meta_bringup import (
-    CameraMetaDescription,
-    get_sensor_configuration,
-    driver_executable_parameters
-)
+from romea_common_meta_bringup import device_namespace
+from romea_camera_meta_bringup import CameraMetaDescription, get_complete_driver_parameters
 
 import tempfile
 import yaml
@@ -76,30 +70,17 @@ def launch_setup(context, *args, **kwargs):
     camera_name = meta_description.get_name()
     camera_namespace = str(meta_description.get_namespace() or "")
     camera_full_namespace = device_namespace(robot_namespace, camera_namespace, camera_name)
-    camera_frame_id = device_link_name(robot_namespace, camera_name)
-
-    user_camera_configuration = meta_description.get_configuration()
-
-    camera_configuration = get_camera_complete_configuration(
-        meta_description.get_type(), meta_description.get_model(), user_camera_configuration
-    )
-
-    save_device_specifications_file(
-        robot_urdf_prefix(robot_namespace), camera_name, camera_configuration
-    )
 
     actions = []
     if mode == "live" and meta_description.has_driver_configuration():
 
-        driver_configuration = meta_description.get_driver_parameters()
-
-        executable = meta_description.get_driver_executable()
-        executable_parameters = driver_executable_parameters(
-            executable,  driver_configuration, camera_configuration, camera_frame_id
+        camera_executable = meta_description.get_driver_executable()
+        camera_executable_parameters = get_complete_driver_parameters(
+            meta_description, robot_namespace
         )
 
-        driver_configuration_file_path = generate_yaml_temp_file(
-            "camera_driver", executable_parameters
+        camera_configuration_file_path = generate_yaml_temp_file(
+            'camera_driver', camera_executable_parameters
         )
 
         actions.append(
@@ -116,9 +97,9 @@ def launch_setup(context, *args, **kwargs):
                     ]
                 ),
                 launch_arguments={
-                    "executable": executable,
+                    "executable": camera_executable,
                     "executable_namespace": camera_full_namespace,
-                    "configuration_file_path": driver_configuration_file_path,
+                    "configuration_file_path": camera_configuration_file_path,
                 }.items(),
             )
         )

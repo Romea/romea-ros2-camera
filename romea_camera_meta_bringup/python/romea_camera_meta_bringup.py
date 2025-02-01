@@ -125,7 +125,6 @@ def get_complete_driver_parameters(meta_description, robot_namespace):
     parameters = meta_description.get_driver_parameters()
     parameters["frame_id"] = frame_id
 
-    print(camera_configuration)
     if executable == "usb_cam_node_exe":
         parameters["framerate"] = camera_configuration["frame_rate"]
         parameters["image_height"] = camera_configuration["image_height"]
