@@ -1,3 +1,4 @@
+type: monocular_camera
 horizontal_fov: # degree
    default: 72
    range: [27, 72]

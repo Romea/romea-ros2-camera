@@ -57,22 +57,43 @@ def get_camera_specification_units():
         return yaml.safe_load(f)
 
 
+def get_camera_complete_component_configuration(
+    component_name, specifications, user_configuration
+):
+    component = Device(
+        component_name, specifications, user_configuration, get_camera_specification_units()
+    )
+
+    configuration = {}
+    configuration["type"] = component.get("type")
+    configuration["frame_rate"] = component.get("frame_rate")
+    configuration["image_width"] = image_width(component.get("resolution"))
+    configuration["image_height"] = image_height(component.get("resolution"))
+    configuration["horizontal_fov"] = component.get("horizontal_fov")
+
+    return configuration
+
+
 def get_camera_complete_configuration(camera_name, user_configuration):
 
     model = user_configuration["model"]
     manufacturer = user_configuration["manufacturer"]
     camera_name = f'{manufacturer} {model} camera called {camera_name}'
     specifications = get_camera_specifications(manufacturer, model)
-    specifications_units = get_camera_specification_units()
-
-    camera = Device(camera_name, specifications, user_configuration, specifications_units)
 
     configuration = {}
-    configuration["frame_rate"] = camera.get("frame_rate")
-    configuration["image_width"] = image_width(camera.get("resolution"))
-    configuration["image_height"] = image_height(camera.get("resolution"))
-    configuration["horizontal_fov"] = camera.get("horizontal_fov")
-    configuration["video_format"] = camera.get("video_format")
+    if "components" in specifications:
+        configuration["type"] = specifications["type"]
+        for component_name in specifications["components"]:
+            configuration[component_name] = get_camera_complete_component_configuration(
+                f"{component_name} component of {camera_name}",
+                specifications[component_name],
+                user_configuration.get(component_name, {}),
+            )
+    else:
+        configuration = get_camera_complete_component_configuration(
+            camera_name, specifications, user_configuration
+        )
 
     return configuration
 
@@ -81,7 +102,7 @@ def urdf(prefix, mode, camera_name, camera_description, camera_location, ros_nam
 
     configuration = get_camera_complete_configuration(camera_name, camera_description)
 
-    configuration_yaml_file = f'/tmp/{prefix}{camera_name}urdf_configuration.yaml'
+    configuration_yaml_file = f'/tmp/{prefix}{camera_name}_urdf_configuration.yaml'
 
     with open(configuration_yaml_file, 'w') as f:
         yaml.dump({**configuration, **camera_location}, f)

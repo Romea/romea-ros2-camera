@@ -35,7 +35,6 @@ def launch_setup(context, *args, **kwargs):
     description = {
         "manufacturer": LaunchConfiguration("camera_manufacturer").perform(context),
         "model": LaunchConfiguration("camera_model").perform(context),
-        "resolution": LaunchConfiguration("camera_resolution").perform(context),
     }
 
     location = {
@@ -64,7 +63,7 @@ def launch_setup(context, *args, **kwargs):
 
     simulation.add_action(gazebo)
 
-    spawn_imu = Node(
+    spawn_camera = Node(
         package="gazebo_ros",
         executable="spawn_entity.py",
         name="spawn_imu",
@@ -72,7 +71,7 @@ def launch_setup(context, *args, **kwargs):
         arguments=["-file", "/tmp/urdf", "-entity", "imu"],
     )
 
-    simulation.add_action(spawn_imu)
+    simulation.add_action(spawn_camera)
 
     return [simulation]
 
@@ -82,8 +81,7 @@ def generate_launch_description():
     declared_arguments = [
         DeclareLaunchArgument("simulator", default_value="gazebo_classic"),
         DeclareLaunchArgument("camera_manufacturer", default_value=""),
-        DeclareLaunchArgument("camera_model", default_value=""),
-        DeclareLaunchArgument("camera_resolution", default_value="800x600"),
+        DeclareLaunchArgument("camera_model", default_value="")
     ]
 
     return LaunchDescription(

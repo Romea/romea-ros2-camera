@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+
+  <xacro:macro name="rgbd_camera_sensor_simulation" 
+    params="prefix mode link_name name configuration ros_namespace">
+
+      <!-- due to gazebo limitation only left camera and depth images are published
+        in the referenced frame of rbg camera optical frame with same size -->
+
+      <xacro:property name="image_width" 
+        value="${configuration['depth_camera']['image_width']}" />
+      <xacro:property name="image_height" 
+        value="${configuration['depth_camera']['image_height']}" />
+      <xacro:property name="horizontal_fov" 
+        value="${configuration['depth_camera']['horizontal_fov']}" />
+      <xacro:property name="frame_rate" 
+        value="${configuration['depth_camera']['frame_rate']}" />
+
+      <xacro:if value="${'gazebo' in  mode}">
+
+        <gazebo reference="${link_name}">
+            <material>Gazebo/Red</material>
+
+            <sensor type="depth" name="${prefix}${name}">
+              <update_rate>${frame_rate}</update_rate>
+
+              <topic>${ros_namespace}/depth</topic>
+              <gz_frame_id>${link_name}</gz_frame_id>  <!-- used only with gazebo 6 or lower -->
+              <ignition_frame_id>${link_name}</ignition_frame_id> <!-- used by gazebo 7 or higher-->
+
+              <camera>
+                <horizontal_fov>${horizontal_fov}</horizontal_fov>
+                <image>
+                  <width>${image_width} </width>
+                  <height>${image_height}</height>
+                  <format>R8G8B8</format>
+                </image>
+                <clip>
+                  <near>0.01</near>
+                  <far>100</far>
+                </clip>
+                <!-- <noise>
+                  <type>gaussian</type>
+                  <mean>0.0</mean>
+                  <stddev>0.007</stddev>
+                </noise>
+                <distortion>
+                  <k1>0.0</k1>
+                  <k2>0.0</k2>
+                  <k3>0.0</k3>
+                  <p1>0.0</p1>
+                  <p2>0.0</p2>
+                  <center>0.5 0.5</center>
+                </distortion> -->
+              </camera>
+
+              <xacro:if value="${'classic' in mode}">
+
+                <plugin name="driver" filename="libgazebo_ros_camera.so">
+                    <ros>
+                      <remapping>camera/camera_info:=rgb/camera_info</remapping>
+                      <remapping>camera/image_raw:=rgb/image_raw</remapping>
+                      <remapping>camera/image_raw/compressed:=rgb/image_raw/compressed</remapping>
+                      <remapping>camera/image_raw/compressedDepth:=rgb/image_raw/compressedDepth</remapping>
+                      <remapping>camera/image_raw/theora:=rgb/image_raw/theora</remapping>
+                      <remapping>camera/depth/camera_info:=depth/camera_info</remapping>
+                      <remapping>camera/depth/image_raw:=depth/image_raw</remapping>
+                      <remapping>camera/depth/image_raw/compressed:=depth/image_raw/compressed</remapping>
+                      <remapping>camera/depth/image_raw/compressedDepth:=depth/image_raw/compressedDepth</remapping>
+                      <remapping>camera/depth/image_raw/theora:=depth/image_raw/theora</remapping>
+                      <remapping>camera/points:=point_cloud/points</remapping>                  
+                    </ros>
+                    <camera_name>camera</camera_name>
+                    <frame_name>${rgb_camera_optical_frame_name}</frame_name>
+                </plugin>
+              </xacro:if>
+
+            </sensor>
+          </gazebo>
+
+    </xacro:if>
+
+  </xacro:macro>
+
+</robot>

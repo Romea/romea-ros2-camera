@@ -1,0 +1,30 @@
+type:
+  default: stereo_camera
+  list: [stereo_camera, rgbd_stereo_camera]
+resolution:
+  default: 1280x720
+  list: [2208x1242, 1920x1080, 1280x720, 672x376]
+horizontal_fov:
+  depend: resolution
+  dict:
+    2208x1242: 96.0
+    1920x1080: 88.0
+    1280x720: 104.0
+    672x376: 107.0
+frame_rate:
+  depend: resolution
+  dict:
+    2208x1242: 15
+    1920x1080:
+      default: 30
+      list: [15, 30]
+    1280x720:
+      default: 30
+      list: [15, 30, 60]
+    672x376:
+      default: 30
+      list: [15, 30, 60, 100]
+image_format: yuyv
+video_format:
+  default: h264
+  list: [h264, h265]

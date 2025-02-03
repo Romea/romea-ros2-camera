@@ -4,8 +4,6 @@
   <xacro:macro name="camera_sensor"
     params="prefix mode name configuration geometry mesh_visual ros_namespace">
 
-    <xacro:property name="M_PI" value="3.1415926535897931" />
-
     <xacro:property name="link_name"
       value="${prefix}${name}_link" />
     <xacro:property name="joint_name"
@@ -92,14 +90,15 @@
     <link name="${optical_frame_name}" />
 
     <joint name="${optical_joint_name}" type="fixed">
-      <origin xyz="0 0 0" rpy="-${M_PI/2} 0.0 -${M_PI/2}" />
+      <origin xyz="0 0 0" rpy="-${pi/2} 0.0 -${pi/2}" />
       <parent link="${link_name}" />
       <child link="${optical_frame_name}" />
     </joint>
 
     <xacro:if value="${'simulation' in mode}">
-      <xacro:include filename="$(find romea_camera_description)/urdf/camera.simulation.xacro" />
-      <xacro:camera_sensor_simulation
+      <xacro:include
+        filename="$(find romea_camera_description)/urdf/monocular_camera.simulation.xacro" />
+      <xacro:monocular_camera_sensor_simulation
         prefix="${prefix}"
         mode="${mode}"
         name="${name}"

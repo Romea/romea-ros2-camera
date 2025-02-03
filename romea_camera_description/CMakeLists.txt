@@ -16,7 +16,14 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   find_package(ament_cmake_pytest REQUIRED)
-  ament_add_pytest_test(test_camera_urdf_gazebo_classic test/test_camera_urdf_gazebo_classic.py)
+  ament_add_pytest_test(test_monocular_camera_urdf_gazebo_classic test/test_monocular_camera_urdf_gazebo_classic.py)
+  ament_add_pytest_test(test_stereo_camera_urdf_gazebo_classic test/test_stereo_camera_urdf_gazebo_classic.py)
+  ament_add_pytest_test(test_rgbd_stereo_camera_urdf_gazebo_classic test/test_rgbd_stereo_camera_urdf_gazebo_classic.py)
+  ament_add_pytest_test(test_rgbd_infrared_stereo_camera_urdf_gazebo_classic test/test_rgbd_infrared_stereo_camera_urdf_gazebo_classic.py)
+  ament_add_pytest_test(test_stereolabs_zed1_description test/test_stereolabs_zed1_description.py)
+  ament_add_pytest_test(test_stereolabs_zed2_description test/test_stereolabs_zed2_description.py)
+  ament_add_pytest_test(test_realsense_d435_description test/test_realsense_d435_description.py)
+
 endif()
 
 ament_package()

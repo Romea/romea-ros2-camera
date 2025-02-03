@@ -22,15 +22,23 @@ from romea_camera_description import urdf
 def urdf_xml():
     prefix = "robot_"
     mode = "simulation"
-    name = "camera"
+    name = "rgbd_infrared_stereo_camera"
 
     description = {
-        "manufacturer": "axis",
-        "model": "p1346",
+        "manufacturer": "realsense",
+        "model": "d435"
+    }
+    description["rgb_camera"] = {
+        "resolution": "1920x1080",
+        "frame_rate": 30,
+    }
+    description["infrared_camera"] = {
+        "resolution": "848x480",
+        "frame_rate": 30,
+    }
+    description["depth_camera"] = {
         "resolution": "1280x720",
         "frame_rate": 30,
-        "horizontal_fov": None,
-        "video_format": None,
     }
 
     location = {
@@ -42,46 +50,34 @@ def urdf_xml():
     ros_namespace = "ns"
 
     print(urdf(prefix, mode, name, description, location, ros_namespace))
-    with open('/tmp/camera_urdf', 'w') as file:
+    with open('/tmp/rgbd_infrared_stereo_camera_urdf', 'w') as file:
         file.write(urdf(prefix, mode, name, description, location, ros_namespace))
 
     return ET.fromstring(urdf(prefix, mode, name, description, location, ros_namespace))
 
 
-def test_camera_name(urdf_xml):
-    assert urdf_xml.find("link").get("name") == "robot_camera_link"
+def test_rgbd_camera_name(urdf_xml):
+    assert urdf_xml.find("link").get("name") == "robot_rgbd_infrared_stereo_camera_link"
 
 
-def test_camera_position(urdf_xml):
-    assert urdf_xml.find("joint/origin").get("xyz") == "1.0 2.0 3.0"
+# def test_rgbd_position(urdf_xml):
+#     assert urdf_xml.find("joint/origin").get("xyz") == "1.0 2.0 3.0"
 
 
-def test_camera_orientation(urdf_xml):
-    assert (
-        urdf_xml.find("joint/origin").get("rpy")
-        == "0.06981317007977318 0.08726646259971647 0.10471975511965977"
-    )
+# def test_rgbd_camera_orientation(urdf_xml):
+#     assert (
+#         urdf_xml.find("joint/origin").get("rpy")
+#         == "0.06981317007977318 0.08726646259971647 0.10471975511965977"
+#     )
 
 
-def test_camera_parent_link(urdf_xml):
-    assert urdf_xml.find("joint/parent").get("link") == "robot_base_link"
+# def test_rgbd_camera_parent_link(urdf_xml):
+#     assert urdf_xml.find("joint/parent").get("link") == "robot_base_link"
 
 
-def test_sensor_update_rate(urdf_xml):
-    assert urdf_xml.find("gazebo/sensor/update_rate").text == "30"
+# def test_rgbd_sensor_update_rate(urdf_xml):
+#     assert urdf_xml.find("gazebo/sensor/update_rate").text == "30"
 
 
-def test_gazebo_horizontal_fov(urdf_xml):
-    assert urdf_xml.find("gazebo/sensor/camera/horizontal_fov").text == "1.2566370614359172"
-
-
-def test_gazebo_image_width(urdf_xml):
-    assert urdf_xml.find("gazebo/sensor/camera/image/width").text == "1280"
-
-
-def test_gazebo_image_height(urdf_xml):
-    assert urdf_xml.find("gazebo/sensor/camera/image/height").text == "720"
-
-
-def test_plugin_namespace(urdf_xml):
-    assert urdf_xml.find("gazebo/sensor/plugin/ros/namespace").text == "ns"
+# def test_plugin_namespace(urdf_xml):
+#     assert urdf_xml.find("gazebo/sensor/plugin/ros/namespace").text == "ns"

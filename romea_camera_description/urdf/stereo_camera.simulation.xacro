@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+
+  <xacro:macro name="camera_stereo_sensor_simulation"
+    params="prefix mode name link_name configuration ros_namespace">
+
+    <xacro:property name="image_width"
+      value="${configuration['image_width']}" />
+    <xacro:property name="image_height"
+      value="${configuration['image_height']}" />
+    <xacro:property name="horizontal_fov"
+      value="${configuration['horizontal_fov']/180.*pi}" />
+    <xacro:property name="frame_rate"
+      value="${configuration['frame_rate']}" />
+
+    <xacro:if value="${'gazebo_classic' in  mode}">
+
+      <gazebo reference="${link_name}">
+        <material>Gazebo/DarkYellow </material>
+
+        <sensor type="multicamera" name="${prefix}${name}">
+          <update_rate>${frame_rate}</update_rate>
+          <camera name="left">
+            <pose>0 ${baseline/2} 0 0 0 0</pose>
+            <horizontal_fov>${horizontal_fov}</horizontal_fov>
+            <image>
+              <width>${image_width} </width>
+              <height>${image_height}</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.01</near>
+              <far>100</far>
+            </clip>
+            <!-- <noise>
+                  <type>gaussian</type>
+                  <mean>0.0</mean>
+                  <stddev>0.007</stddev>
+                </noise>
+                <distortion>
+                  <k1>0.0</k1>
+                  <k2>0.0</k2>
+                  <k3>0.0</k3>
+                  <p1>0.0</p1>
+                  <p2>0.0</p2>
+                  <center>0.5 0.5</center>
+                </distortion> -->
+          </camera>
+
+          <camera name="right">
+            <pose>0 ${baseline/2} 0 0 0 0</pose>
+            <horizontal_fov>${horizontal_fov}</horizontal_fov>
+            <image>
+              <width>${image_width} </width>
+              <height>${image_height}</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.01</near>
+              <far>100</far>
+            </clip>
+            <!-- <noise>
+                  <type>gaussian</type>
+                  <mean>0.0</mean>
+                  <stddev>0.007</stddev>
+                </noise>
+                <distortion>
+                  <k1>0.0</k1>
+                  <k2>0.0</k2>
+                  <k3>0.0</k3>
+                  <p1>0.0</p1>
+                  <p2>0.0</p2>
+                  <center>0.5 0.5</center>
+                </distortion> -->
+          </camera>
+
+          <plugin name="driver" filename="libgazebo_ros_camera.so">
+            <ros>
+              <namespace>${ros_namespace}</namespace>
+              <remapping>camera/left/image_raw:=left/image_raw</remapping>
+              <remapping>camera/right/image_raw:=right/image_raw</remapping>
+              <remapping>camera/left/camera_info:=left/camera_info</remapping>
+              <remapping>camera/right/camera_info:=right/camera_info</remapping>
+              <remapping>camera/left/image_raw/compressed:=left/image_raw/compressed</remapping>
+              <remapping>camera/right/image_raw/compressed:=right/image_raw/compressed</remapping>
+              <remapping>camera/left/image_raw/compressedDepth:=left/image_raw/compressedDepth</remapping>
+              <remapping>camera/right/image_raw/compressedDepth:=right/image_raw/compressedDepth</remapping>
+              <remapping>camera/left/image_raw/theora:=left/image_raw/theora</remapping>
+              <remapping>camera/right/image_raw/theora:=right/image_raw/theora</remapping>
+            </ros>
+            <camera_name>camera</camera_name>
+            <frame_name>${link_name}</frame_name>
+            <frame_name>${link_name}</frame_name>
+          </plugin>
+
+        </sensor>
+      </gazebo>
+    </xacro:if>
+
+  </xacro:macro>
+
+</robot>

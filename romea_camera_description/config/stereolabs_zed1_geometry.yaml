@@ -1,0 +1,11 @@
+baseline: 0.12
+mass: 0.135
+aabb :
+  length: 0.030
+  width: 0.175
+  height: 0.033
+  center: [0.0, 0.0, 0.0]
+# mesh:
+#   xyz: [0.0, 0.0, 0.0]
+#   rpy: [0.0, 0.0, 0.0]
+#   filename: package://zed-ros-interfaces/meshes/zed1.stl

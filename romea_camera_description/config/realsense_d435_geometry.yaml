@@ -1,0 +1,12 @@
+baseline: 0.05
+rgb_camera_x_offset: 0.015
+mass: 0.075
+aabb :
+  length: 0.025
+  width: 0.090
+  height: 0.025
+  center: [0.0, 0.0, 0.0]
+# mesh:
+#   xyz: [0.0, -0.0175, 0.0]
+#   rpy: [0.0, 0.0, 0.0]
+#   filename: package://realsense2_description/meshes/d435.dae"

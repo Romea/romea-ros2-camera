@@ -129,6 +129,9 @@ def get_complete_driver_parameters(meta_description, robot_namespace):
         parameters["framerate"] = camera_configuration["frame_rate"]
         parameters["image_height"] = camera_configuration["image_height"]
         parameters["image_width"] = camera_configuration["image_width"]
+        if camera_configuration["type"] == "stereo_camera":
+            parameters["image_width"] = 2*parameters["image_width"]
+
     else:
         # TODO (add other drivers)
         pass

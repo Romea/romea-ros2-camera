@@ -1,0 +1,119 @@
+type: rgbd_infrared_stereo_camera
+components: [infrared_camera, depth_camera, rgb_camera]
+
+# infrared_projector:
+#   type: projector
+#   vertical_fov: 90
+#   horizontal_fov: 63
+
+infrared_camera:
+  type: stereo_camera
+  vertical_fov: 42
+  horizontal_fov: 69
+  resolution:
+    default: 1280x720
+    list: [1280x720, 848x480, 640x480, 640x360, 424x240, 320x240, 320x180]
+  frame_rate:
+    depend: resolution
+    dict:
+      1280x720:
+        default: 15
+        list: [6, 15, 30]
+      848x480:
+        default: 30
+        list: [6, 15, 30, 60]
+      640x480:
+        default: 30
+        list: [6, 15, 30, 60]
+      640x360:
+        default: 30
+        list: [6, 15, 30, 60]
+      424x240:
+        default: 30
+        list: [6, 15, 30, 60]
+      320x240:
+        default: 30
+        list: [6, 30, 60]
+      320x180:
+        default: 30
+        list: [6, 30, 60]
+  image_format: Y8
+
+depth_camera:
+  type: monocular_camera
+  vertical_fov: 42
+  horizontal_fov: 69
+  resolution:
+    default: 1280x720
+    list: [1280x720, 848x480, 640x480, 640x360, 424x240, 320x240, 320x180]
+  frame_rate:
+    depend: resolution
+    dict:
+      1280x720:
+        default: 30
+        list: [5, 15, 30]
+      848x480:
+        default: 30
+        list: [5, 15, 30, 50, 90]
+      640x480:
+        default: 30
+        list: [5, 15, 30, 50, 90]
+      640x360:
+        default: 30
+        list: [5, 15, 30, 50, 90]
+      480x270:
+        default: 30
+        list: [5, 15, 30, 50, 90]
+      resolution_424x240:
+        default: 30
+        list: [5, 15, 30, 50, 90]
+
+rgb_camera:
+  type: monocular_camera
+  vertical_fov: 42
+  horizontal_fov: 69
+  resolution:
+    default: 1280x720
+    list:
+      [
+        1920x1080,
+        1280x720,
+        950X540,
+        848x480,
+        640x480,
+        640x360,
+        424x240,
+        320x240,
+        320x180,
+      ]
+  frame_rate:
+    depend: resolution
+    dict:
+      1920x1080:
+        default: 15
+        list: [6, 15, 30]
+      1280x720:
+        default: 15
+        list: [6, 15, 30]
+      950x540:
+        default: 30
+        list: [6, 15, 30, 60]
+      848x480:
+        default: 30
+        list: [6, 15, 30, 60]
+      640x480:
+        default: 30
+        list: [6, 15, 30, 60]
+      640x360:
+        default: 30
+        list: [6, 15, 30, 60]
+      424x240:
+        default: 30
+        list: [6, 15, 30, 60]
+      320x240:
+        default: 30
+        list: [6, 30, 60]
+      320x180:
+        default: 30
+        list: [6, 30, 60]
+  image_format: YUY2

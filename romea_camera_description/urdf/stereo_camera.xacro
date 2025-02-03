@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+
+  <xacro:macro name="camera_sensor"
+    params="prefix mode name configuration geometry mesh_visual ros_namespace">
+
+    <xacro:property name="link_name"
+      value="${prefix}${name}_link" />
+    <xacro:property name="joint_name"
+      value="${prefix}${name}_joint" />
+    <xacro:property name="left_camera_link_name"
+      value="${prefix}${name}_left_camera_link" />
+    <xacro:property name="left_camera_joint_name"
+      value="${prefix}${name}_left_camera_joint" />
+    <xacro:property name="left_camera_optical_frame_name"
+      value="${prefix}${name}_left_camera_optical_frame" />
+    <xacro:property name="left_camera_optical_joint_name"
+      value="${prefix}${name}_left_camera_optical_joint" />
+    <xacro:property name="right_camera_link_name"
+      value="${prefix}${name}_right_camera_link" />
+    <xacro:property name="right_camera_joint_name"
+      value="${prefix}${name}_right_camera_joint" />
+    <xacro:property name="right_camera_optical_frame_name"
+      value="${prefix}${name}_right_camera_optical_frame" />
+    <xacro:property name="right_camera_optical_joint_name"
+      value="${prefix}${name}_right_camera_optical_joint" />
+    <xacro:property name="parent_link_name"
+      value="${prefix}${configuration['parent_link']}" />
+
+    <xacro:property name="xyz"
+      value="${configuration['xyz']}" />
+    <xacro:property name="rpy"
+      value="${configuration['rpy']}" />
+
+    <xacro:property name="baseline"
+      value="${geometry['baseline']}" />
+    <xacro:property name="mass"
+      value="${geometry['mass']}" />
+    <xacro:property name="aabb"
+      value="${geometry['aabb']}" />
+    <xacro:property name="aabb_length"
+      value="${geometry['aabb']['length']}" />
+    <xacro:property name="aabb_width"
+      value="${geometry['aabb']['width']}" />
+    <xacro:property name="aabb_height"
+      value="${geometry['aabb']['height']}" />
+    <xacro:property name="aabb_center"
+      value="${geometry['aabb']['center']}" />
+
+    <xacro:if value="${mesh_visual == True and 'mesh' in geometry}">
+      <xacro:property name="mesh_xyz"
+        value="${geometry['mesh']['xyz']}" />
+      <xacro:property name="mesh_rpy"
+        value="${geometry['mesh']['rpy']}" />
+      <xacro:property name="mesh_scale"
+        value="${geometry['mesh']['scale']}" />
+      <xacro:property name="mesh_filename"
+        value="${geometry['mesh']['filename']}" />
+    </xacro:if>
+
+
+    <!-- Camera Center -->
+    <joint name="${joint_name}" type="fixed">
+      <parent link="${parent_link_name}" />
+      <child link="${link_name}" />
+      <origin xyz="${xyz[0]} ${xyz[1]} ${xyz[2]}"
+        rpy="${rpy[0]/180.*pi} ${rpy[1]/180.*pi} ${rpy[2]/180.*pi}" />
+    </joint>
+
+    <link name="${link_name}">
+      <inertial>
+        <mass value="${mass}" />
+        <origin xyz="${aabb_center[0]} ${aabb_center[1]} ${aabb_center[2]}" />
+        <inertia ixx="${0.0833333 * mass * (aabb_width*aabb_width + aabb_height*aabb_height)}"
+          ixy="0.0" ixz="0.0"
+          iyy="${0.0833333 * mass * (aabb_height*aabb_height + aabb_length*aabb_length)}" iyz="0.0"
+          izz="${0.0833333 * mass * (aabb_length*aabb_length + aabb_width*aabb_width)}" />
+      </inertial>
+      <visual>
+        <xacro:if value="${mesh_visual == True and 'mesh' in geometry}">
+          <origin xyz="${mesh_xyz[0]} ${mesh_xyz[1]} ${mesh_xyz[2]}"
+            rpy="${mesh_rpy[0]/180.*pi} ${mesh_rpy[1]/180.*pi} ${mesh_rpy[2]/180.*pi}" />
+          <geometry>
+            <mesh filename="${mesh_filename}"
+              scale="${mesh_scale[0]} ${mesh_scale[1]} ${mesh_scale[2]}" />
+          </geometry>
+        </xacro:if>
+        <xacro:if value="${mesh_visual == False or 'mesh' not in geometry}">
+          <origin xyz="${aabb_center[0]} ${aabb_center[1]} ${aabb_center[2]}" rpy="0 0 0" />
+          <geometry>
+            <box size="${aabb_length} ${aabb_width} ${aabb_height}" />
+          </geometry>
+        </xacro:if>
+      </visual>
+      <collision>
+        <origin xyz="${aabb_center[0]} ${aabb_center[1]} ${aabb_center[2]}" rpy="0 0 0" />
+        <geometry>
+          <box size="${aabb_length} ${aabb_width} ${aabb_height}" />
+        </geometry>
+      </collision>
+    </link>
+
+
+    <!-- Left Camera -->
+    <joint name="${left_camera_joint_name}" type="fixed">
+      <parent link="${link_name}" />
+      <child link="${left_camera_link_name}" />
+      <origin xyz="0 ${baseline/2} 0" rpy="0 0 0" />
+    </joint>
+
+    <link name="${left_camera_link_name}" />
+
+    <joint name="${left_camera_optical_joint_name}" type="fixed">
+      <origin xyz="0 0 0" rpy="-${pi/2} 0.0 -${pi/2}" />
+      <parent link="${left_camera_link_name}" />
+      <child link="${left_camera_optical_frame_name}" />
+    </joint>
+
+    <link name="${left_camera_optical_frame_name}" />
+
+
+    <!-- Right Camera -->
+    <joint name="${right_camera_joint_name}" type="fixed">
+      <parent link="${link_name}" />
+      <child link="${right_camera_link_name}" />
+      <origin xyz="0 -${baseline/2} 0" rpy="0 0 0" />
+    </joint>
+
+    <link name="${right_camera_link_name}" />
+
+    <joint name="${right_camera_optical_joint_name}" type="fixed">
+      <origin xyz="0 0 0" rpy="-${pi/2} 0.0 -${pi/2}" />
+      <parent link="${right_camera_link_name}" />
+      <child link="${right_camera_optical_frame_name}" />
+    </joint>
+
+    <link name="${right_camera_optical_frame_name}" />
+
+    <xacro:if value="${'simulation' in mode}">
+      <xacro:include
+        filename="$(find romea_stereo_camera_description)/urdf/stereo_camera.simulation.xacro" />
+      <xacro:camera_stereo_sensor_simulation
+        prefix="${prefix}"
+        mode="${mode}"
+        name="${name}"
+        link_name="${link_name}"
+        configuration="${configuration}"
+        ros_namespace="${ros_namespace}" />
+    </xacro:if>
+
+
+  </xacro:macro>
+
+</robot>

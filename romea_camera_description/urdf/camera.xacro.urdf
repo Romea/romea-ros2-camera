@@ -21,7 +21,7 @@
   <xacro:property name="geometry"
     value="${load_yaml(geometry_config_yaml_file)}" />
 
-  <xacro:include filename="$(find romea_camera_description)/urdf/camera.xacro" />
+  <xacro:include filename="$(find romea_camera_description)/urdf/${configuration['type']}.xacro" />
   <xacro:camera_sensor
     prefix="$(arg prefix)"
     mode="$(arg mode)"

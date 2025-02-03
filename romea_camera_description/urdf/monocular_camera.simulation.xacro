@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
 
-  <xacro:macro name="camera_sensor_simulation"
+  <xacro:macro name="monocular_camera_sensor_simulation"
     params="prefix mode name link_name configuration ros_namespace">
 
     <xacro:property name="image_width"

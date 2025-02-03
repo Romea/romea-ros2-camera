@@ -1,0 +1,62 @@
+# Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from ament_index_python.packages import get_package_share_directory
+
+from romea_camera_description import (
+    get_camera_complete_configuration,
+    get_camera_geometry_file_path,
+    get_camera_geometry,
+    get_camera_specifications_file_path,
+    get_camera_specifications,
+)
+
+
+def test_get_camera_specifications_file_path_ok():
+    assert (
+        get_camera_specifications_file_path("stereolabs", "zed1")
+        == get_package_share_directory("romea_camera_description")
+        + "/config/stereolabs_zed1_specifications.yaml"
+    )
+
+
+def test_get_camera_specifications_ok():
+    assert (
+        get_camera_specifications("stereolabs", "zed1")["resolution"]["default"]
+        == "1280x720"
+    )
+
+
+def test_get_camera_geometry_file_path_ok():
+    assert (
+        get_camera_geometry_file_path("stereolabs", "zed1")
+        == get_package_share_directory("romea_camera_description")
+        + "/config/stereolabs_zed1_geometry.yaml"
+    )
+
+
+def test_get_camera_geometry_ok():
+    assert get_camera_geometry("stereolabs", "zed1")["mass"] == 0.135
+
+
+def test_get_camera_complete_configuration_ok():
+    user_description = {"manufacturer": "stereolabs", "model": "zed1", "frame_rate": 30}
+
+    configuration = get_camera_complete_configuration("stereo_camera", user_description)
+
+    assert configuration["type"] == "stereo_camera"
+    assert configuration["frame_rate"] == 30
+    assert configuration["image_width"] == 1280
+    assert configuration["image_height"] == 720
+    assert configuration["horizontal_fov"] == 85.0
