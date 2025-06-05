@@ -15,14 +15,13 @@
 
 import os
 import pytest
-from numpy import radians
 
 from romea_camera_meta_bringup import CameraMetaDescription
 
 
 @pytest.fixture(scope="module")
 def meta_description():
-    meta_description_file_path = os.path.join(os.getcwd(), "test_camera_meta_bringup.yaml")
+    meta_description_file_path = os.path.join(os.getcwd(), "test_stereo_camera_meta_bringup.yaml")
     return CameraMetaDescription(meta_description_file_path)
 
 
@@ -34,29 +33,16 @@ def test_get_namespace(meta_description):
     assert meta_description.get_namespace() == "ns"
 
 
-def test_has_driver_configuration(meta_description):
-    assert meta_description.has_driver_configuration() is True
-
-
-def test_get_driver_package(meta_description):
-    assert meta_description.get_driver_package() == "usb_cam"
-
-
-def test_get_driver_executable(meta_description):
-    assert meta_description.get_driver_executable() == "usb_cam_node_exe"
-
-
-def test_get_driver_parameters(meta_description):
-    parameters = meta_description.get_driver_parameters()
-    assert parameters["video_device"] == "/dev/video0"
+def test_get_launch_file(meta_description):
+    assert meta_description.get_launch_file() is not None
 
 
 def test_get_manufacturer(meta_description):
-    assert meta_description.get_manufacturer() == "axis"
+    assert meta_description.get_manufacturer() == "stereolabs"
 
 
 def test_get_model(meta_description):
-    assert meta_description.get_model() == "p1346"
+    assert meta_description.get_model() == "zed1"
 
 
 def test_get_frame_rate(meta_description):
@@ -65,14 +51,6 @@ def test_get_frame_rate(meta_description):
 
 def test_get_resolution_(meta_description):
     assert meta_description.get_resolution() == "1280x720"
-
-
-def test_get_horizontal_fov(meta_description):
-    assert meta_description.get_horizontal_fov() is None
-
-
-def test_get_video_format(meta_description):
-    assert meta_description.get_video_format() is None
 
 
 def test_get_parent_link(meta_description):
@@ -84,11 +62,7 @@ def test_get_xyz(meta_description):
 
 
 def test_get_rpy_deg(meta_description):
-    assert meta_description.get_rpy_deg() == [4.0, 5.0, 6.0]
-
-
-def test_get_rpy_rad(meta_description):
-    assert meta_description.get_rpy_rad() == radians([4.0, 5.0, 6.0]).tolist()
+    assert meta_description.get_rpy() == [4.0, 5.0, 6.0]
 
 
 def test_get_records(meta_description):

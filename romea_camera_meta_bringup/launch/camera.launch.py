@@ -19,27 +19,17 @@ from launch.actions import (
     IncludeLaunchDescription,
     DeclareLaunchArgument,
     OpaqueFunction,
-    GroupAction,
 )
 
-from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
-from launch_ros.substitutions import FindPackageShare
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.launch_description_sources import AnyLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 
-from romea_common_meta_bringup import device_namespace
-from romea_camera_meta_bringup import CameraMetaDescription, get_complete_driver_parameters
-
-import tempfile
-import yaml
-import os
+from romea_camera_meta_bringup import CameraMetaDescription, generate_launch_file
 
 
 def get_mode(context):
     mode = LaunchConfiguration("mode").perform(context)
-    if mode == "simulation":
-        return "simulation_gazebo_classic"
-    else:
-        return mode
+    return "simulation_gazebo_classic" if mode == "simulation" else mode
 
 
 def get_robot_namespace(context):
@@ -47,83 +37,25 @@ def get_robot_namespace(context):
 
 
 def get_meta_description(context):
-
     meta_description_file_path = LaunchConfiguration("meta_description_file_path").perform(context)
-
-    return CameraMetaDescription(meta_description_file_path)
-
-
-def generate_yaml_temp_file(prefix: str, data: dict):
-    fd, filepath = tempfile.mkstemp(prefix=prefix + "_", suffix=".yaml")
-    with os.fdopen(fd, "w") as file:
-        file.write(yaml.safe_dump(data))
-
-    return filepath
+    return CameraMetaDescription(meta_description_file_path, get_robot_namespace(context))
 
 
 def launch_setup(context, *args, **kwargs):
-
     mode = get_mode(context)
-    robot_namespace = get_robot_namespace(context)
     meta_description = get_meta_description(context)
+    launch_filename = f"/tmp/{meta_description.get_filename_prefix()}driver.launch.yaml"
+    with open(launch_filename, "w") as f:
+        f.write(generate_launch_file(meta_description))
 
-    camera_name = meta_description.get_name()
-    camera_namespace = str(meta_description.get_namespace() or "")
-    camera_full_namespace = device_namespace(robot_namespace, camera_namespace, camera_name)
-
-    actions = []
-    if mode == "live" and meta_description.has_driver_configuration():
-
-        camera_executable = meta_description.get_driver_executable()
-        camera_executable_parameters = get_complete_driver_parameters(
-            meta_description, robot_namespace
+    return [
+        IncludeLaunchDescription(
+            AnyLaunchDescriptionSource(launch_filename),
+            launch_arguments={
+                "mode": mode,
+            }.items(),
         )
-
-        camera_configuration_file_path = generate_yaml_temp_file(
-            'camera_driver', camera_executable_parameters
-        )
-
-        actions.append(
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(
-                    [
-                        PathJoinSubstitution(
-                            [
-                                FindPackageShare("romea_camera_bringup"),
-                                "launch",
-                                "drivers/" + meta_description.get_driver_package() + ".launch.py",
-                            ]
-                        )
-                    ]
-                ),
-                launch_arguments={
-                    "executable": camera_executable,
-                    "executable_namespace": camera_full_namespace,
-                    "configuration_file_path": camera_configuration_file_path,
-                }.items(),
-            )
-        )
-
-    if mode == "simulation_gazebo":
-        actions.append(
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(
-                    [
-                        PathJoinSubstitution(
-                            [
-                                FindPackageShare("romea_camera_bringup"),
-                                "launch",
-                                "drivers/gazebo_bridge.launch.py",
-                            ]
-                        )
-                    ]
-                )
-            )
-        )
-
-    # add launch viewer
-
-    return [GroupAction(actions)]
+    ]
 
 
 def generate_launch_description():
