@@ -1,7 +1,7 @@
 type: monocular_camera
 horizontal_fov: # degree
-   default: 72
-   range: [27, 72]
+   default: 72.0
+   range: [27.0, 72.0]
 resolution:
    default: 1280x720
    list: [2560x1920, 2048x1536, 1920x1080, 1280x720, 800x600, 640x480]
@@ -14,6 +14,7 @@ frame_rate: # hz
       1920x1080: 30
       2048x1536: 20
       2560x1920: 12
+image_format: yuyv
 video_mode:
    depend: resolution
    dict:

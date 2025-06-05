@@ -69,6 +69,7 @@ def get_camera_complete_component_configuration(
     configuration["frame_rate"] = component.get("frame_rate")
     configuration["image_width"] = image_width(component.get("resolution"))
     configuration["image_height"] = image_height(component.get("resolution"))
+    configuration["image_format"] = component.get("image_format")
     configuration["horizontal_fov"] = component.get("horizontal_fov")
 
     return configuration

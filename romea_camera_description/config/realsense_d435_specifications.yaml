@@ -67,6 +67,11 @@ depth_camera:
       resolution_424x240:
         default: 30
         list: [5, 15, 30, 50, 90]
+  image_format: Z16
+  auto_exposure:
+    default: true
+    list: [true, false]
+  # exposure ?
 
 rgb_camera:
   type: monocular_camera
@@ -116,4 +121,8 @@ rgb_camera:
       320x180:
         default: 30
         list: [6, 30, 60]
-  image_format: YUY2
+  image_format: RGB8
+  auto_exposure:
+    default: true
+    list: [true, false]
+  # exposure ?
