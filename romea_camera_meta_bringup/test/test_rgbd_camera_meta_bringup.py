@@ -38,12 +38,15 @@ def test_get_launch_file(meta_description):
 
 
 def test_get_manufacturer(meta_description):
-    assert meta_description.get_manufacturer() == "realsense"
+    assert meta_description.get_manufacturer() == "intel"
 
 
 def test_get_model(meta_description):
-    assert meta_description.get_model() == "d435"
+    assert meta_description.get_model() == "realsense"
 
+
+def test_get_version(meta_description):
+    assert meta_description.get_version() == "d435"
 
 def test_get_rgb_frame_rate(meta_description):
     assert meta_description.get_frame_rate("rgb_camera") == 15

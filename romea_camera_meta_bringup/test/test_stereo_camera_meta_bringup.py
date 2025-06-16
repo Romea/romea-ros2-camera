@@ -42,8 +42,11 @@ def test_get_manufacturer(meta_description):
 
 
 def test_get_model(meta_description):
-    assert meta_description.get_model() == "zed1"
+    assert meta_description.get_model() == "zed"
 
+
+def test_get_version(meta_description):
+    assert meta_description.get_version() == "1"
 
 def test_get_frame_rate(meta_description):
     assert meta_description.get_frame_rate() == 30

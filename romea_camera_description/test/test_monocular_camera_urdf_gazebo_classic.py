@@ -27,6 +27,7 @@ def urdf_xml():
     description = {
         "manufacturer": "axis",
         "model": "p1346",
+        "version": "",
         "resolution": "1280x720",
         "frame_rate": 30,
         "horizontal_fov": None,

@@ -7,8 +7,9 @@ launch:
         - name: device
           value: /dev/video0
 configuration:
-  manufacturer: realsense
-  model: d435
+  manufacturer: intel
+  model: realsense
+  version: d435
   rgb_camera:
     frame_rate: 15 # hz
     resolution: 640x480 # width x height

@@ -8,7 +8,8 @@ launch:
           value: /dev/video0
 configuration:
   manufacturer: stereolabs
-  model: zed1
+  model: zed
+  version: "1"
   frame_rate: 30 # hz
   resolution: 1280x720 # width x height
 location:

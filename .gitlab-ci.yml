@@ -2,6 +2,15 @@ include:
   - project: "jean.laneurit/ros_gitlab_ci"
     file: ".gitlab-ci.yml"
 
+# galatic
+galactic_focal_build:
+  image: ros:galactic-ros-base-focal
+  stage: build
+  script:
+    - colcon build
+    - source install/setup.bash
+    - colcon test --packages-select romea_camera_bringup romea_camera_description
+    - colcon test-result --verbose
 
 variables:
   PKGS_TO_BUILD_TEST: "romea_camera_bringup romea_camera_description"

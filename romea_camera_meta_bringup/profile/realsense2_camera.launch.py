@@ -252,13 +252,15 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
 
-    declared_arguments = []
-    declared_arguments.append(DeclareLaunchArgument("device"))
-    declared_arguments.append(DeclareLaunchArgument("enable_color", default_value="true"))
-    declared_arguments.append(DeclareLaunchArgument("enable_depth", default_value="true"))
-    declared_arguments.append(DeclareLaunchArgument("enable_rgbd", default_value="false"))
-    declared_arguments.append(DeclareLaunchArgument("enable_infra", default_value="false"))
-    declared_arguments.append(DeclareLaunchArgument("enable_infra_left", default_value="false"))
-    declared_arguments.append(DeclareLaunchArgument("enable_infra_right", default_value="false"))
-
-    return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])
+    return LaunchDescription(
+        [
+            DeclareLaunchArgument("device"),
+            DeclareLaunchArgument("enable_color", default_value="true"),
+            DeclareLaunchArgument("enable_depth", default_value="true"),
+            DeclareLaunchArgument("enable_rgbd", default_value="false"),
+            DeclareLaunchArgument("enable_infra", default_value="false"),
+            DeclareLaunchArgument("enable_infra_left", default_value="false"),
+            DeclareLaunchArgument("enable_infra_right", default_value="false"),
+            OpaqueFunction(function=launch_setup)
+        ]
+    )

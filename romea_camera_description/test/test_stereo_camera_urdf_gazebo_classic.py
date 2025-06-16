@@ -26,7 +26,8 @@ def urdf_xml():
 
     description = {
         "manufacturer": "stereolabs",
-        "model": "zed1",
+        "model": "zed",
+        "version": "1",
         "resolution": "1280x720",
         "frame_rate": 30,
     }

@@ -45,6 +45,9 @@ def test_get_model(meta_description):
     assert meta_description.get_model() == "p1346"
 
 
+def test_get_version(meta_description):
+    assert meta_description.get_version() == ""
+
 def test_get_frame_rate(meta_description):
     assert meta_description.get_frame_rate() == 30
 

@@ -25,35 +25,36 @@ from romea_camera_description import (
 
 def test_get_camera_specifications_file_path_ok():
     assert (
-        get_camera_specifications_file_path("realsense", "d435")
+        get_camera_specifications_file_path("intel", "realsense", "d435")
         == get_package_share_directory("romea_camera_description")
-        + "/config/realsense_d435_specifications.yaml"
+        + "/config/intel_realsense_d435_specifications.yaml"
     )
 
 
 def test_get_camera_specifications_ok():
     assert (
-        get_camera_specifications("realsense", "d435")["rgb_camera"]["resolution"]["default"]
+        get_camera_specifications("intel", "realsense", "d435")["rgb_camera"]["resolution"]["default"]
         == "1280x720"
     )
 
 
 def test_get_camera_geometry_file_path_ok():
     assert (
-        get_camera_geometry_file_path("realsense", "d435")
+        get_camera_geometry_file_path("intel", "realsense", "d435")
         == get_package_share_directory("romea_camera_description")
-        + "/config/realsense_d435_geometry.yaml"
+        + "/config/intel_realsense_d435_geometry.yaml"
     )
 
 
 def test_get_camera_geometry_ok():
-    assert get_camera_geometry("realsense", "d435")["mass"] == 0.075
+    assert get_camera_geometry("intel", "realsense", "d435")["mass"] == 0.075
 
 
 def test_get_camera_complete_configuration_ok():
     user_description = {
-        "manufacturer": "realsense",
-        "model": "d435",
+        "manufacturer": "intel",
+        "model": "realsense",
+        "version": "d435",
         "infrared_camera": {
             "frame_rate": 30,
             "resolution": "640x480"

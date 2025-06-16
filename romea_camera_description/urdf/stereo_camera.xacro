@@ -139,7 +139,7 @@
 
     <xacro:if value="${'simulation' in mode}">
       <xacro:include
-        filename="$(find romea_stereo_camera_description)/urdf/stereo_camera.simulation.xacro" />
+        filename="$(find romea_camera_description)/urdf/stereo_camera.simulation.xacro" />
       <xacro:camera_stereo_sensor_simulation
         prefix="${prefix}"
         mode="${mode}"

@@ -35,6 +35,7 @@ def launch_setup(context, *args, **kwargs):
     description = {
         "manufacturer": LaunchConfiguration("camera_manufacturer").perform(context),
         "model": LaunchConfiguration("camera_model").perform(context),
+        "version": LaunchConfiguration("camera_version").perform(context),
     }
 
     location = {
@@ -81,7 +82,8 @@ def generate_launch_description():
     declared_arguments = [
         DeclareLaunchArgument("simulator", default_value="gazebo_classic"),
         DeclareLaunchArgument("camera_manufacturer", default_value=""),
-        DeclareLaunchArgument("camera_model", default_value="")
+        DeclareLaunchArgument("camera_model", default_value=""),
+        DeclareLaunchArgument("camera_version", default_value="")
     ]
 
     return LaunchDescription(

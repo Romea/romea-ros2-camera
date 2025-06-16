@@ -25,8 +25,9 @@ def urdf_xml():
     name = "rgbd_infrared_stereo_camera"
 
     description = {
-        "manufacturer": "realsense",
-        "model": "d435"
+        "manufacturer": "intel",
+        "model": "realsense",
+        "version": "d435"
     }
     description["rgb_camera"] = {
         "resolution": "1920x1080",
