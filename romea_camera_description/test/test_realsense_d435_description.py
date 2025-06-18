@@ -22,36 +22,13 @@ from romea_camera_description import (
     get_camera_specifications,
 )
 
-
-def test_get_camera_specifications_file_path_ok():
-    assert (
-        get_camera_specifications_file_path("intel", "realsense", "d435")
-        == get_package_share_directory("romea_camera_description")
-        + "/config/intel_realsense_d435_specifications.yaml"
-    )
+import pytest
 
 
-def test_get_camera_specifications_ok():
-    assert (
-        get_camera_specifications("intel", "realsense", "d435")["rgb_camera"]["resolution"]["default"]
-        == "1280x720"
-    )
+@pytest.fixture(scope="module")
+def user_description():
 
-
-def test_get_camera_geometry_file_path_ok():
-    assert (
-        get_camera_geometry_file_path("intel", "realsense", "d435")
-        == get_package_share_directory("romea_camera_description")
-        + "/config/intel_realsense_d435_geometry.yaml"
-    )
-
-
-def test_get_camera_geometry_ok():
-    assert get_camera_geometry("intel", "realsense", "d435")["mass"] == 0.075
-
-
-def test_get_camera_complete_configuration_ok():
-    user_description = {
+    return {
         "manufacturer": "intel",
         "model": "realsense",
         "version": "d435",
@@ -68,6 +45,36 @@ def test_get_camera_complete_configuration_ok():
             "resolution": "1280x720"
         }
     }
+
+
+def test_get_camera_specifications_file_path_ok(user_description):
+    assert (
+        get_camera_specifications_file_path(user_description)
+        == get_package_share_directory("romea_camera_description")
+        + "/config/intel_realsense_d435_specifications.yaml"
+    )
+
+
+def test_get_camera_specifications_ok(user_description):
+    assert (
+        get_camera_specifications(user_description)["rgb_camera"]["resolution"]["default"]
+        == "1280x720"
+    )
+
+
+def test_get_camera_geometry_file_path_ok(user_description):
+    assert (
+        get_camera_geometry_file_path(user_description)
+        == get_package_share_directory("romea_camera_description")
+        + "/config/intel_realsense_d435_geometry.yaml"
+    )
+
+
+def test_get_camera_geometry_ok(user_description):
+    assert get_camera_geometry(user_description)["mass"] == 0.075
+
+
+def test_get_camera_complete_configuration_ok(user_description):
 
     configuration = get_camera_complete_configuration("stereo_camera", user_description)
 

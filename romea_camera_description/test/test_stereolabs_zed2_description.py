@@ -22,40 +22,48 @@ from romea_camera_description import (
     get_camera_specifications,
 )
 
+import pytest
 
-def test_get_camera_specifications_file_path_ok():
+
+@pytest.fixture(scope="module")
+def user_description():
+
+    return {
+        "manufacturer": "stereolabs",
+        "model": "zed",
+        "version": "2",
+        "frame_rate": 30
+    }
+
+
+def test_get_camera_specifications_file_path_ok(user_description):
     assert (
-        get_camera_specifications_file_path("stereolabs", "zed", "2")
+        get_camera_specifications_file_path(user_description)
         == get_package_share_directory("romea_camera_description")
         + "/config/stereolabs_zed_2_specifications.yaml"
     )
 
 
-def test_get_camera_specifications_ok():
+def test_get_camera_specifications_ok(user_description):
     assert (
-        get_camera_specifications("stereolabs", "zed", "2")["resolution"]["default"]
+        get_camera_specifications(user_description)["resolution"]["default"]
         == "1280x720"
     )
 
 
-def test_get_camera_geometry_file_path_ok():
+def test_get_camera_geometry_file_path_ok(user_description):
     assert (
-        get_camera_geometry_file_path("stereolabs", "zed", "2")
+        get_camera_geometry_file_path(user_description)
         == get_package_share_directory("romea_camera_description")
         + "/config/stereolabs_zed_2_geometry.yaml"
     )
 
 
-def test_get_camera_geometry_ok():
-    assert get_camera_geometry("stereolabs", "zed", "2")["mass"] == 0.124
+def test_get_camera_geometry_ok(user_description):
+    assert get_camera_geometry(user_description)["mass"] == 0.124
 
 
-def test_get_camera_complete_configuration_ok():
-    user_description = {
-        "manufacturer": "stereolabs",
-        "model": "zed",
-        "version": "2",
-        "frame_rate": 30}
+def test_get_camera_complete_configuration_ok(user_description):
 
     configuration = get_camera_complete_configuration("stereo_camera", user_description)
 

@@ -16,7 +16,9 @@
 import xacro
 import yaml
 from romea_common_description import DeviceConfiguration as Device
-from romea_common_description import get_configuration_file
+from romea_common_description import generate_configuration_file
+from romea_common_description import get_specifications_file_path
+from romea_common_description import get_geometry_file_path
 from ament_index_python.packages import get_package_share_directory
 
 
@@ -28,36 +30,21 @@ def image_height(resolution):
     return int(resolution.split("x")[1])
 
 
-def get_camera_configuration_file_path(manufacturer, model, version, what):
-    package = get_package_share_directory('romea_camera_description')
-    configuration_file_path = get_configuration_file(
-        f"{package}/config", f"{manufacturer}_{model}_{version}_{what}.yaml"
-    )
-
-    if not configuration_file_path:
-        raise RuntimeError(
-            f"No {manufacturer} {model} {version} camera is supported by {package} package. "
-            'Please check your configuration or contribute to support this kind of sensor.'
-        )
-
-    return configuration_file_path
+def get_camera_specifications_file_path(camera_description):
+    return get_specifications_file_path("romea_camera_description", camera_description)
 
 
-def get_camera_specifications_file_path(manufacturer, model, version):
-    return get_camera_configuration_file_path(manufacturer, model, version, "specifications")
-
-
-def get_camera_specifications(manufacturer, model, version):
-    with open(get_camera_specifications_file_path(manufacturer, model, version)) as f:
+def get_camera_specifications(camera_description):
+    with open(get_camera_specifications_file_path(camera_description)) as f:
         return yaml.safe_load(f)
 
 
-def get_camera_geometry_file_path(manufacturer, model, version):
-    return get_camera_configuration_file_path(manufacturer, model, version, "geometry")
- 
+def get_camera_geometry_file_path(camera_description):
+    return get_geometry_file_path("romea_camera_description", camera_description)
 
-def get_camera_geometry(manufacturer, model, version):
-    with open(get_camera_geometry_file_path(manufacturer, model, version)) as f:
+
+def get_camera_geometry(camera_description):
+    with open(get_camera_geometry_file_path(camera_description)) as f:
         return yaml.safe_load(f)
 
 
@@ -72,10 +59,10 @@ def get_camera_specification_units():
 
 
 def get_camera_complete_component_configuration(
-    component_name, specifications, user_configuration
+    component_name, specifications, camera_description
 ):
     component = Device(
-        component_name, specifications, user_configuration, get_camera_specification_units()
+        component_name, specifications, camera_description, get_camera_specification_units()
     )
 
     configuration = {}
@@ -89,27 +76,30 @@ def get_camera_complete_component_configuration(
     return configuration
 
 
-def get_camera_complete_configuration(camera_name, user_configuration):
+def get_camera_complete_configuration(camera_name, camera_description):
 
-    model = user_configuration["model"]
-    version = user_configuration["version"]
-    manufacturer = user_configuration["manufacturer"]
+    model = camera_description["model"]
+    version = camera_description["version"]
+    manufacturer = camera_description["manufacturer"]
 
     camera_name = f'{manufacturer} {model} {version} camera called {camera_name}'
-    specifications = get_camera_specifications(manufacturer, model, version)
+    specifications = get_camera_specifications(camera_description)
 
     configuration = {}
+    configuration["model"] = camera_description["model"]
+    configuration["version"] = camera_description["version"]
+    configuration["manufacturer"] = camera_description["manufacturer"]
     if "components" in specifications:
         configuration["type"] = specifications["type"]
         for component_name in specifications["components"]:
             configuration[component_name] = get_camera_complete_component_configuration(
                 f"{component_name} component of {camera_name}",
                 specifications[component_name],
-                user_configuration.get(component_name, {}),
+                camera_description.get(component_name, {}),
             )
     else:
         configuration = get_camera_complete_component_configuration(
-            camera_name, specifications, user_configuration
+            camera_name, specifications, camera_description
         )
 
     return configuration
@@ -117,18 +107,17 @@ def get_camera_complete_configuration(camera_name, user_configuration):
 
 def urdf(prefix, mode, camera_name, camera_description, camera_location, ros_namespace):
 
+    units = get_camera_specification_units()
     configuration = get_camera_complete_configuration(camera_name, camera_description)
 
     configuration_yaml_file = f'/tmp/{prefix}{camera_name}_urdf_configuration.yaml'
 
     with open(configuration_yaml_file, 'w') as f:
-        yaml.dump({**configuration, **camera_location}, f)
+        # yaml.dump({**configuration, **camera_location}, f)
+        f.write(generate_configuration_file({**configuration, **camera_location}, units, False))
 
-    geometry_yaml_file = get_camera_geometry_file_path(
-        camera_description["manufacturer"],
-        camera_description["model"],
-        camera_description["version"]
-    )
+
+    geometry_yaml_file = get_camera_geometry_file_path(camera_description)
 
     xacro_file = (
         get_package_share_directory("romea_camera_description") + "/urdf/camera.xacro.urdf"

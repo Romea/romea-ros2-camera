@@ -1,2 +1,4 @@
 horizontal_fov: °
 frame_rate: Hz
+xyz: m
+rpy: °

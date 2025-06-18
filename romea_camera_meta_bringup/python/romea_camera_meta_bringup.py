@@ -37,17 +37,13 @@ def load_meta_description(meta_description_file_path, robot_name= None):
 
 def get_sensor_specifications(meta_description):
     return romea_camera_description.get_camera_specifications(
-        meta_description.get_manufacturer(),
-        meta_description.get_model(),
-        meta_description.get_version()
+        meta_description.get_configuration()
     )
 
 
 def get_sensor_geometry(meta_description):
     return romea_camera_description.get_camera_geometry(
-        meta_description.get_manufacturer(),
-        meta_description.get_model(),
-        meta_description.get_version()
+        meta_description.get_configuration()
     )
 
 
@@ -67,8 +63,6 @@ def generate_launch_file(meta_description):
     launch_arguments = [{"name": "mode", "default": "live"}]
     namespaces = [meta_description.get_robot_name(), meta_description.get_name()]
     configuration = get_complete_sensor_configuration(meta_description)
-    configuration["manufacturer"] = meta_description.get_manufacturer()
-    configuration["model"] = meta_description.get_model()
     configuration["tf_prefix"] = meta_description.get_urdf_prefix()
     configuration["frame_id"] = meta_description.get_link()
 
