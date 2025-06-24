@@ -48,6 +48,7 @@ def test_get_model(meta_description):
 def test_get_version(meta_description):
     assert meta_description.get_version() == "1"
 
+
 def test_get_frame_rate(meta_description):
     assert meta_description.get_frame_rate() == 30
 

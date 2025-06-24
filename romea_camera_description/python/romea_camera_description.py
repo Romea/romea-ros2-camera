@@ -75,7 +75,7 @@ def get_camera_complete_component_configuration(
     }
 
 
-def get_camera_complete_configuration(camera_name, camera_description , camera_location):
+def get_camera_complete_configuration(camera_name, camera_description, camera_location):
 
     model = camera_description["model"]
     version = camera_description["version"]

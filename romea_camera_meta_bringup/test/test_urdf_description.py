@@ -30,7 +30,9 @@ def urdf():
         + "/lib/romea_camera_meta_bringup/generate_urdf_description.py"
     )
 
-    meta_description_file_path = os.path.join(os.getcwd(), "test_monocular_camera_meta_bringup.yaml")
+    meta_description_file_path = os.path.join(
+        os.getcwd(), "test_monocular_camera_meta_bringup.yaml"
+    )
 
     return ET.fromstring(
         subprocess.check_output(

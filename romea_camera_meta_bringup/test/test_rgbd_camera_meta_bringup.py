@@ -21,7 +21,9 @@ from romea_camera_meta_bringup import CameraMetaDescription
 
 @pytest.fixture(scope="module")
 def meta_description():
-    meta_description_file_path = os.path.join(os.getcwd(), "test_rgbd_camera_meta_bringup.yaml")
+    meta_description_file_path = os.path.join(
+        os.getcwd(), "test_rgbd_camera_meta_bringup.yaml"
+    )
     return CameraMetaDescription(meta_description_file_path)
 
 
@@ -47,6 +49,7 @@ def test_get_model(meta_description):
 
 def test_get_version(meta_description):
     assert meta_description.get_version() == "d435"
+
 
 def test_get_rgb_frame_rate(meta_description):
     assert meta_description.get_frame_rate("rgb_camera") == 15

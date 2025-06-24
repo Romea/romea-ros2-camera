@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import romea_common_description
 import romea_camera_description
 from romea_common_meta_bringup import SensorMetaDescription, LaunchFileGenerator
 
@@ -31,7 +30,7 @@ class CameraMetaDescription(SensorMetaDescription):
         return "configuration" if component is None else f"configuration.{component}"
 
 
-def load_meta_description(meta_description_file_path, robot_name= None):
+def load_meta_description(meta_description_file_path, robot_name=None):
     return CameraMetaDescription(meta_description_file_path, robot_name)
 
 
