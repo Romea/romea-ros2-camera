@@ -65,18 +65,17 @@ def get_camera_complete_component_configuration(
         component_name, specifications, camera_description, get_camera_specification_units()
     )
 
-    configuration = {}
-    configuration["type"] = component.get("type")
-    configuration["frame_rate"] = component.get("frame_rate")
-    configuration["image_width"] = image_width(component.get("resolution"))
-    configuration["image_height"] = image_height(component.get("resolution"))
-    configuration["image_format"] = component.get("image_format")
-    configuration["horizontal_fov"] = component.get("horizontal_fov")
+    return {
+     "type": component.get("type"),
+     "frame_rate": component.get("frame_rate"),
+     "image_width": image_width(component.get("resolution")),
+     "image_height": image_height(component.get("resolution")),
+     "image_format": component.get("image_format"),
+     "horizontal_fov": component.get("horizontal_fov")
+    }
 
-    return configuration
 
-
-def get_camera_complete_configuration(camera_name, camera_description):
+def get_camera_complete_configuration(camera_name, camera_description , camera_location):
 
     model = camera_description["model"]
     version = camera_description["version"]
@@ -85,37 +84,40 @@ def get_camera_complete_configuration(camera_name, camera_description):
     camera_name = f'{manufacturer} {model} {version} camera called {camera_name}'
     specifications = get_camera_specifications(camera_description)
 
-    configuration = {}
-    configuration["model"] = camera_description["model"]
-    configuration["version"] = camera_description["version"]
-    configuration["manufacturer"] = camera_description["manufacturer"]
+    camera_configuration = {}
+    camera_configuration["model"] = camera_description["model"]
+    camera_configuration["version"] = camera_description["version"]
+    camera_configuration["manufacturer"] = camera_description["manufacturer"]
     if "components" in specifications:
-        configuration["type"] = specifications["type"]
+        camera_configuration["type"] = specifications["type"]
         for component_name in specifications["components"]:
-            configuration[component_name] = get_camera_complete_component_configuration(
+            camera_configuration[component_name] = get_camera_complete_component_configuration(
                 f"{component_name} component of {camera_name}",
                 specifications[component_name],
                 camera_description.get(component_name, {}),
             )
     else:
-        configuration = get_camera_complete_component_configuration(
+        camera_configuration = get_camera_complete_component_configuration(
             camera_name, specifications, camera_description
         )
 
-    return configuration
+    return {**camera_configuration, **camera_location}
+
+
+def generate_camera_configuration_file(configuration, extended):
+    units = get_camera_specification_units()
+    return generate_configuration_file(configuration, units, extended)
 
 
 def urdf(prefix, mode, camera_name, camera_description, camera_location, ros_namespace):
 
-    units = get_camera_specification_units()
-    configuration = get_camera_complete_configuration(camera_name, camera_description)
+    configuration = get_camera_complete_configuration(
+        camera_name, camera_description, camera_location
+    )
 
-    configuration_yaml_file = f'/tmp/{prefix}{camera_name}_urdf_configuration.yaml'
-
+    configuration_yaml_file = f'/tmp/{prefix}{camera_name}_configuration.yaml'
     with open(configuration_yaml_file, 'w') as f:
-        # yaml.dump({**configuration, **camera_location}, f)
-        f.write(generate_configuration_file({**configuration, **camera_location}, units, False))
-
+        f.write(generate_camera_configuration_file(configuration, False))
 
     geometry_yaml_file = get_camera_geometry_file_path(camera_description)
 

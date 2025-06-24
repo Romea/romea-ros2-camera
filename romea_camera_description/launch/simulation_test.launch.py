@@ -33,9 +33,9 @@ def launch_setup(context, *args, **kwargs):
     name = "camera"
 
     description = {
-        "manufacturer": LaunchConfiguration("camera_manufacturer").perform(context),
-        "model": LaunchConfiguration("camera_model").perform(context),
-        "version": LaunchConfiguration("camera_version").perform(context),
+        "manufacturer": LaunchConfiguration("manufacturer").perform(context),
+        "model": LaunchConfiguration("model").perform(context),
+        "version": LaunchConfiguration("version").perform(context),
     }
 
     location = {
@@ -64,15 +64,15 @@ def launch_setup(context, *args, **kwargs):
 
     simulation.add_action(gazebo)
 
-    spawn_camera = Node(
+    spawn_entity = Node(
         package="gazebo_ros",
         executable="spawn_entity.py",
-        name="spawn_imu",
+        name="spawn_camera",
         output="screen",
-        arguments=["-file", "/tmp/urdf", "-entity", "imu"],
+        arguments=["-file", "/tmp/urdf", "-entity", "camera"],
     )
 
-    simulation.add_action(spawn_camera)
+    simulation.add_action(spawn_entity)
 
     return [simulation]
 
@@ -81,9 +81,9 @@ def generate_launch_description():
 
     declared_arguments = [
         DeclareLaunchArgument("simulator", default_value="gazebo_classic"),
-        DeclareLaunchArgument("camera_manufacturer", default_value=""),
-        DeclareLaunchArgument("camera_model", default_value=""),
-        DeclareLaunchArgument("camera_version", default_value="")
+        DeclareLaunchArgument("manufacturer", default_value=""),
+        DeclareLaunchArgument("model", default_value=""),
+        DeclareLaunchArgument("version", default_value="")
     ]
 
     return LaunchDescription(
