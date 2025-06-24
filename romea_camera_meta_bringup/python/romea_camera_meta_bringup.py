@@ -49,14 +49,15 @@ def get_sensor_geometry(meta_description):
 
 def get_complete_sensor_configuration(meta_description):
     return romea_camera_description.get_camera_complete_configuration(
-        meta_description.get_name(), meta_description.get_configuration()
+        meta_description.get_name(),
+        meta_description.get_configuration(),
+        meta_description.get_location()
     )
 
 
 def generate_configuration_file(meta_description, extended):
     configuration = get_complete_sensor_configuration(meta_description)
-    units = romea_camera_description.get_camera_specification_units()
-    return romea_common_description.generate_configuration_file(configuration, units, extended)
+    return romea_camera_description.generate_camera_configuration_file(configuration, extended)
 
 
 def generate_launch_file(meta_description):
@@ -66,10 +67,9 @@ def generate_launch_file(meta_description):
     configuration = get_complete_sensor_configuration(meta_description)
     configuration["tf_prefix"] = meta_description.get_urdf_prefix()
     configuration["frame_id"] = meta_description.get_link()
-    location = meta_description.get_location()
 
     return LaunchFileGenerator("camera").generate(
-        launch_file, launch_arguments, namespaces, {**configuration, **location}
+        launch_file, launch_arguments, namespaces, configuration
     )
 
 
