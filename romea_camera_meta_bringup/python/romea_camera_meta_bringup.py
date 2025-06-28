@@ -34,20 +34,20 @@ def load_meta_description(meta_description_file_path, robot_name=None):
     return CameraMetaDescription(meta_description_file_path, robot_name)
 
 
-def get_sensor_specifications(meta_description):
+def get_specifications(meta_description):
     return romea_camera_description.get_camera_specifications(
         meta_description.get_configuration()
     )
 
 
-def get_sensor_geometry(meta_description):
+def get_geometry(meta_description):
     return romea_camera_description.get_camera_geometry(
         meta_description.get_configuration()
     )
 
 
-def get_complete_sensor_configuration(meta_description):
-    return romea_camera_description.get_camera_complete_configuration(
+def get_complete_configuration(meta_description):
+    return romea_camera_description.get_complete_configuration(
         meta_description.get_name(),
         meta_description.get_configuration(),
         meta_description.get_location()
@@ -55,7 +55,7 @@ def get_complete_sensor_configuration(meta_description):
 
 
 def generate_configuration_file(meta_description, extended):
-    configuration = get_complete_sensor_configuration(meta_description)
+    configuration = get_complete_configuration(meta_description)
     return romea_camera_description.generate_camera_configuration_file(configuration, extended)
 
 
@@ -63,7 +63,7 @@ def generate_launch_file(meta_description):
     launch_file = meta_description.get_launch_file()
     launch_arguments = [{"name": "mode", "default": "live"}]
     namespaces = [meta_description.get_robot_name(), meta_description.get_name()]
-    configuration = get_complete_sensor_configuration(meta_description)
+    configuration = get_complete_configuration(meta_description)
     configuration["tf_prefix"] = meta_description.get_urdf_prefix()
     configuration["frame_id"] = meta_description.get_link()
 
@@ -74,7 +74,7 @@ def generate_launch_file(meta_description):
 
 def generate_urdf_description(mode, meta_description):
 
-    return romea_camera_description.urdf(
+    return romea_camera_description.generate_urdf_description(
         meta_description.get_urdf_prefix(),
         mode,
         meta_description.get_name(),

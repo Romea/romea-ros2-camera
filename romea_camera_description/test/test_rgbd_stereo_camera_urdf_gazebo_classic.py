@@ -15,7 +15,7 @@
 
 import pytest
 import xml.etree.ElementTree as ET
-from romea_camera_description import urdf
+from romea_camera_description import generate_urdf_description as urdf
 
 
 @pytest.fixture(scope="module")
@@ -48,7 +48,7 @@ def urdf_xml():
     return ET.fromstring(urdf(prefix, mode, name, description, location, ros_namespace))
 
 
-def test_rgbd_camera_name(urdf_xml):
+def test_rgbd_stereo_camera_name(urdf_xml):
     assert urdf_xml.find("link").get("name") == "robot_rgbd_stereo_camera_link"
 
 

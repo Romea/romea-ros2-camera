@@ -15,11 +15,11 @@
 from ament_index_python.packages import get_package_share_directory
 
 from romea_camera_description import (
-    get_camera_complete_configuration,
-    get_camera_geometry_file_path,
-    get_camera_geometry,
-    get_camera_specifications_file_path,
-    get_camera_specifications,
+    get_complete_configuration,
+    get_geometry_file_path,
+    get_geometry,
+    get_specifications_file_path,
+    get_specifications,
 )
 
 import pytest
@@ -36,36 +36,33 @@ def user_description():
     }
 
 
-def test_get_camera_specifications_file_path_ok(user_description):
+def test_get_specifications_file_path_ok(user_description):
     assert (
-        get_camera_specifications_file_path(user_description)
+        get_specifications_file_path(user_description)
         == get_package_share_directory("romea_camera_description")
         + "/config/stereolabs_zed_2_specifications.yaml"
     )
 
 
-def test_get_camera_specifications_ok(user_description):
-    assert (
-        get_camera_specifications(user_description)["resolution"]["default"]
-        == "1280x720"
-    )
+def test_get_specifications_ok(user_description):
+    assert get_specifications(user_description)["resolution"]["default"] == "1280x720"
 
 
-def test_get_camera_geometry_file_path_ok(user_description):
+def test_get_geometry_file_path_ok(user_description):
     assert (
-        get_camera_geometry_file_path(user_description)
+        get_geometry_file_path(user_description)
         == get_package_share_directory("romea_camera_description")
         + "/config/stereolabs_zed_2_geometry.yaml"
     )
 
 
-def test_get_camera_geometry_ok(user_description):
-    assert get_camera_geometry(user_description)["mass"] == 0.124
+def test_get_geometry_ok(user_description):
+    assert get_geometry(user_description)["mass"] == 0.124
 
 
-def test_get_camera_complete_configuration_ok(user_description):
+def test_get_complete_configuration_ok(user_description):
 
-    configuration = get_camera_complete_configuration("stereo_camera", user_description)
+    configuration = get_complete_configuration("stereo_camera", user_description, {})
 
     assert configuration["type"] == "stereo_camera"
     assert configuration["frame_rate"] == 30
