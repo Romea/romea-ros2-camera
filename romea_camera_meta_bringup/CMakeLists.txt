@@ -24,6 +24,10 @@ install(PROGRAMS
 )
 
 if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  set(ament_cmake_flake8_CONFIG_FILE "${CMAKE_SOURCE_DIR}/.flake8")
+  list(APPEND AMENT_LINT_AUTO_EXCLUDE ament_cmake_copyright)
+
   find_package(ament_cmake_pytest REQUIRED)
   configure_file(test/test_monocular_camera_meta_bringup.yaml test_monocular_camera_meta_bringup.yaml)
   configure_file(test/test_stereo_camera_meta_bringup.yaml test_stereo_camera_meta_bringup.yaml)
