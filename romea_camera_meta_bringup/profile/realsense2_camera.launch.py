@@ -15,8 +15,8 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
-from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
 
 
 def get_module_parameter(module_name, parameter, context):
@@ -181,60 +181,60 @@ def launch_setup(context, *args, **kwargs):
             "reconnect_timeout": 6.0,
         }
 
-        remappings = [
-            (
-                "driver/aligned_depth_to_color/camera_info",
-                "aligned_depth_to_color/camera_info",
-            ),
-            ("driver/aligned_depth_to_color/image_raw", "aligned_depth_to_color/image_raw"),
-            (
-                "driver/aligned_depth_to_color/image_raw/compressed",
-                "aligned_depth_to_color/image_raw/compressed",
-            ),
-            (
-                "driver/aligned_depth_to_color/image_raw/compressedDepth",
-                "aligned_depth_to_color/image_raw/compressedDepth",
-            ),
-            (
-                "driver/aligned_depth_to_color/image_raw/theora",
-                "aligned_depth_to_color/image_raw/theora",
-            ),
-            ("driver/aligned_depth_to_color/metadata", "depth/metadata"),
-            ("driver/color/camera_info", "rgb/camera_info"),
-            ("driver/color/image_raw", "rgb/image_raw"),
-            ("driver/color/image_raw/compressed", "rgb/image_raw/compressed"),
-            ("driver/color/image_raw/compressedDepth", "rgb/image_raw/compressedDepth"),
-            ("driver/color/image_raw/theora", "rgb/image_raw/theora"),
-            ("driver/color/metadata", "depth/metadata"),
-            ("driver/depth/camera_info", "depth/camera_info"),
-            ("driver/depth/image_rect_raw", "depth/image_raw"),
-            ("driver/depth/image_rect_raw/compressed", "depth/image_raw/compressed"),
-            ("driver/depth/image_rect_raw/compressedDepth", "depth/image_raw/compressedDepth"),
-            ("driver/depth/image_rect_raw/theora", "depth/image_raw/theora"),
-            ("driver/depth/metadata", "depth/metadata"),
-            ("driver/infra1/camera_info", "infrared_right/camera_info"),
-            ("driver/infra1/image_rect_raw", "infrared_right/image_raw"),
-            ("driver/infra1/image_rect_raw/compressed", "infrared_right/image_raw/compressed"),
-            (
-                "driver/infra1/image_rect_raw/compressedDepth",
-                "infrared_right/image_raw/compressedDepth",
-            ),
-            ("driver/infra1/image_rect_raw/theora", "infrared_right/image_raw/theora"),
-            ("driver/infra1/metadata", "infrared_right/metadata"),
-            ("driver/infra2/camera_info", "infrared_left/camera_info"),
-            ("driver/infra2/image_rect_raw", "infrared_left/image_raw"),
-            ("driver/infra2/image_rect_raw/compressed", "infrared_left/image_raw/compressed"),
-            (
-                "driver/infra2/image_rect_raw/compressedDepth",
-                "infrared_left/image_raw/compressedDepth",
-            ),
-            ("driver/infra2/image_rect_raw/theora", "infrared_left/image_raw/theora"),
-            ("driver/infra2/metadata", "infrared_left/metadata"),
-            ("driver/depth/color/points", "points"),
-            ("driver/extrinsics/depth_to_color", "extrinsics/depth_to_color"),
-            ("driver/extrinsics/depth_to_depth", "extrinsics/depth_to_depth"),
-            ("driver/imu", "imu"),
-        ],
+        # remappings = [
+        #     (
+        #         "driver/aligned_depth_to_color/camera_info",
+        #         "aligned_depth_to_color/camera_info",
+        #     ),
+        #     ("driver/aligned_depth_to_color/image_raw", "aligned_depth_to_color/image_raw"),
+        #     (
+        #         "driver/aligned_depth_to_color/image_raw/compressed",
+        #         "aligned_depth_to_color/image_raw/compressed",
+        #     ),
+        #     (
+        #         "driver/aligned_depth_to_color/image_raw/compressedDepth",
+        #         "aligned_depth_to_color/image_raw/compressedDepth",
+        #     ),
+        #     (
+        #         "driver/aligned_depth_to_color/image_raw/theora",
+        #         "aligned_depth_to_color/image_raw/theora",
+        #     ),
+        #     ("driver/aligned_depth_to_color/metadata", "depth/metadata"),
+        #     ("driver/color/camera_info", "rgb/camera_info"),
+        #     ("driver/color/image_raw", "rgb/image_raw"),
+        #     ("driver/color/image_raw/compressed", "rgb/image_raw/compressed"),
+        #     ("driver/color/image_raw/compressedDepth", "rgb/image_raw/compressedDepth"),
+        #     ("driver/color/image_raw/theora", "rgb/image_raw/theora"),
+        #     ("driver/color/metadata", "depth/metadata"),
+        #     ("driver/depth/camera_info", "depth/camera_info"),
+        #     ("driver/depth/image_rect_raw", "depth/image_raw"),
+        #     ("driver/depth/image_rect_raw/compressed", "depth/image_raw/compressed"),
+        #     ("driver/depth/image_rect_raw/compressedDepth", "depth/image_raw/compressedDepth"),
+        #     ("driver/depth/image_rect_raw/theora", "depth/image_raw/theora"),
+        #     ("driver/depth/metadata", "depth/metadata"),
+        #     ("driver/infra1/camera_info", "infrared_right/camera_info"),
+        #     ("driver/infra1/image_rect_raw", "infrared_right/image_raw"),
+        #     ("driver/infra1/image_rect_raw/compressed", "infrared_right/image_raw/compressed"),
+        #     (
+        #         "driver/infra1/image_rect_raw/compressedDepth",
+        #         "infrared_right/image_raw/compressedDepth",
+        #     ),
+        #     ("driver/infra1/image_rect_raw/theora", "infrared_right/image_raw/theora"),
+        #     ("driver/infra1/metadata", "infrared_right/metadata"),
+        #     ("driver/infra2/camera_info", "infrared_left/camera_info"),
+        #     ("driver/infra2/image_rect_raw", "infrared_left/image_raw"),
+        #     ("driver/infra2/image_rect_raw/compressed", "infrared_left/image_raw/compressed"),
+        #     (
+        #         "driver/infra2/image_rect_raw/compressedDepth",
+        #         "infrared_left/image_raw/compressedDepth",
+        #     ),
+        #     ("driver/infra2/image_rect_raw/theora", "infrared_left/image_raw/theora"),
+        #     ("driver/infra2/metadata", "infrared_left/metadata"),
+        #     ("driver/depth/color/points", "points"),
+        #     ("driver/extrinsics/depth_to_color", "extrinsics/depth_to_color"),
+        #     ("driver/extrinsics/depth_to_depth", "extrinsics/depth_to_depth"),
+        #     ("driver/imu", "imu"),
+        # ],
 
         launch.add_action(
             Node(

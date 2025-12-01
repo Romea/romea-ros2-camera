@@ -14,9 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-from romea_camera_meta_bringup import CameraMetaDescription, generate_configuration_file
 import sys
+
+from romea_camera_meta_bringup.meta_description import (
+    CameraMetaDescription,
+    generate_configuration_file,
+)
 
 if __name__ == "__main__":
 

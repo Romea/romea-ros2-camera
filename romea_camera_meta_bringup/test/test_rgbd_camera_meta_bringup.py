@@ -14,9 +14,9 @@
 
 
 import os
-import pytest
 
-from romea_camera_meta_bringup import CameraMetaDescription
+import pytest
+from romea_camera_meta_bringup.meta_description import CameraMetaDescription
 
 
 @pytest.fixture(scope="module")

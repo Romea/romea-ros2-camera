@@ -13,14 +13,12 @@
 # limitations under the License.
 
 
+from ament_index_python.packages import get_package_share_directory
+
+import romea_common_description
+
 import xacro
 import yaml
-import romea_common_description
-# from romea_common_description import DeviceConfiguration as Device
-# from romea_common_description import generate_configuration_file
-# from romea_common_description import get_specifications_file_path
-# from romea_common_description import get_geometry_file_path
-from ament_index_python.packages import get_package_share_directory
 
 
 def image_width(resolution):

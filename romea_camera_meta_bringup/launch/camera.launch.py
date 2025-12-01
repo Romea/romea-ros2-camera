@@ -14,17 +14,14 @@
 
 
 from launch import LaunchDescription
-
-from launch.actions import (
-    IncludeLaunchDescription,
-    DeclareLaunchArgument,
-    OpaqueFunction,
-)
-
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import AnyLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
-from romea_camera_meta_bringup import CameraMetaDescription, generate_launch_file
+from romea_camera_meta_bringup.meta_description import (
+    CameraMetaDescription,
+    generate_launch_file,
+)
 
 
 def get_mode(context):

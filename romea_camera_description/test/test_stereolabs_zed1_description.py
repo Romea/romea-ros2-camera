@@ -14,15 +14,15 @@
 
 from ament_index_python.packages import get_package_share_directory
 
+import pytest
+
 from romea_camera_description import (
     get_complete_configuration,
-    get_geometry_file_path,
     get_geometry,
-    get_specifications_file_path,
+    get_geometry_file_path,
     get_specifications,
+    get_specifications_file_path,
 )
-
-import pytest
 
 
 @pytest.fixture(scope="module")
@@ -45,7 +45,7 @@ def test_get_specifications_file_path_ok(user_description):
 
 
 def test_get_specifications_ok(user_description):
-    assert get_specifications(user_description)["resolution"]["default"]== "1280x720"
+    assert get_specifications(user_description)["resolution"]["default"] == "1280x720"
 
 
 def test_get_geometry_file_path_ok(user_description):
