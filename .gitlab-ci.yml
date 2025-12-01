@@ -3,4 +3,4 @@ include:
     file: ".gitlab-ci.yml"
 
 variables:
-  PKGS_TO_BUILD_TEST: "romea_camera_bringup romea_camera_description"
+  PKGS_TO_BUILD_TEST: "romea_camera_meta_bringup romea_camera_description"
