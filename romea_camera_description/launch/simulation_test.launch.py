@@ -81,7 +81,7 @@ def launch_setup(context, *args, **kwargs):
 def generate_launch_description():
 
     declared_arguments = [
-        DeclareLaunchArgument("simulator", default_value="gazebo_classic"),
+        DeclareLaunchArgument("simulator", default_value="gazebo"),
         DeclareLaunchArgument("manufacturer", default_value=""),
         DeclareLaunchArgument("model", default_value=""),
         DeclareLaunchArgument("version", default_value="")

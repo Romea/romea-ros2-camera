@@ -57,7 +57,7 @@ def get_complete_configuration(meta_description):
 
 def generate_configuration_file(meta_description, extended):
     configuration = get_complete_configuration(meta_description)
-    return romea_camera_description.generate_camera_configuration_file(configuration, extended)
+    return romea_camera_description.generate_configuration_file(configuration, extended)
 
 
 def generate_launch_file(meta_description):
