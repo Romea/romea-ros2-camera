@@ -14,7 +14,7 @@
 
 import xml.etree.ElementTree as ET
 
-from ament_index_python.packages import get_package_share_directory
+from ament_index_python.packages import get_package_share_directory, get_packages_with_prefixes
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
@@ -22,14 +22,16 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
-from romea_camera_description import urdf
+from romea_camera_description import generate_urdf_description as urdf
+
+
+def check_pkg_exists(pkg_name):
+    return pkg_name in get_packages_with_prefixes()
 
 
 def launch_setup(context, *args, **kwargs):
 
     mode = f'simulation_{LaunchConfiguration("simulator").perform(context)}'
-
-    mode = "simulation"
     prefix = "robot_"
     name = "camera"
 
@@ -56,24 +58,76 @@ def launch_setup(context, *args, **kwargs):
 
     simulation = LaunchDescription()
 
-    gazebo = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            get_package_share_directory("gazebo_ros")
-            + "/launch/gazebo.launch.py"
-        ),
-    )
+    if check_pkg_exists("gazebo_ros"):
 
-    simulation.add_action(gazebo)
+        gazebo = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                get_package_share_directory("gazebo_ros")
+                + "/launch/gazebo.launch.py"
+            ),
+        )
 
-    spawn_entity = Node(
-        package="gazebo_ros",
-        executable="spawn_entity.py",
-        name="spawn_camera",
-        output="screen",
-        arguments=["-file", "/tmp/urdf", "-entity", "camera"],
-    )
+        simulation.add_action(gazebo)
 
-    simulation.add_action(spawn_entity)
+        spawn_camera = Node(
+            package="gazebo_ros",
+            executable="spawn_entity.py",
+            name="spawn_calera",
+            output="screen",
+            arguments=["-file", "/tmp/urdf", "-entity", "camera"],
+        )
+
+        simulation.add_action(spawn_imu)
+
+    if check_pkg_exists("ros_gz"):
+
+        gazebo_gui = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                get_package_share_directory("ros_gz_sim")
+                + "/launch/gz_sim.launch.py"
+            ),
+            launch_arguments={
+                'gz_args': '-g',
+                'on_exit_shutdown': 'True'
+            }.items()
+        )
+
+        simulation.add_action(gazebo_gui)
+
+        gazebo_server = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                get_package_share_directory("ros_gz_sim")
+                + "/launch/gz_server.launch.py"
+            ),
+            launch_arguments={
+                'world_sdf_file': 'empty.sdf',
+                'world_sdf_string': 'world',
+            }.items()
+        )
+
+        simulation.add_action(gazebo_server)
+
+        spawn_camera = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                get_package_share_directory('ros_gz_sim')
+                + "/launch/gz_spawn_model.launch.py"
+            ),
+            launch_arguments=[
+                ('file', '/tmp/urdf'),
+                ('entity_name', 'camera'),
+            ],
+        )
+
+        simulation.add_action(spawn_camera)
+
+        ros_bridge = Node(
+            package="ros_gz_bridge",
+            executable="parameter_bridge",
+            name="imu_bridge",
+            arguments=["/robot/camera/image_raw@sensor_msgs/msg/Image@gz.msgs.Image"],
+        )
+
+        simulation.add_action(ros_bridge)
 
     return [simulation]
 

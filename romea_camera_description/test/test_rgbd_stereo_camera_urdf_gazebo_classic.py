@@ -22,7 +22,7 @@ from romea_camera_description import generate_urdf_description as urdf
 @pytest.fixture(scope="module")
 def urdf_xml():
     prefix = "robot_"
-    mode = "simulation"
+    mode = "simulation_gazebo_classic"
     name = "rgbd_stereo_camera"
 
     description = {
