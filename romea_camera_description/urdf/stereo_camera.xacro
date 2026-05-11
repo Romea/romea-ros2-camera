@@ -3,7 +3,7 @@
 
 
   <xacro:macro name="camera_sensor"
-    params="prefix mode name configuration geometry mesh_visual ros_namespace">
+    params="prefix mode name configuration geometry mesh_visual ros_namespace standalone">
 
     <xacro:property name="link_name"
       value="${prefix}${name}_link" />
@@ -61,12 +61,14 @@
 
 
     <!-- Camera Center -->
-    <joint name="${joint_name}" type="fixed">
-      <parent link="${parent_link_name}" />
-      <child link="${link_name}" />
-      <origin xyz="${xyz[0]} ${xyz[1]} ${xyz[2]}"
-        rpy="${rpy[0]/180.*pi} ${rpy[1]/180.*pi} ${rpy[2]/180.*pi}" />
-    </joint>
+    <xacro:if value="${standalone == False}">
+      <joint name="${joint_name}" type="fixed">
+        <parent link="${parent_link_name}" />
+        <child link="${link_name}" />
+        <origin xyz="${xyz[0]} ${xyz[1]} ${xyz[2]}"
+          rpy="${rpy[0]/180.*pi} ${rpy[1]/180.*pi} ${rpy[2]/180.*pi}" />
+      </joint>
+    </xacro:if>
 
     <link name="${link_name}">
       <inertial>
@@ -144,7 +146,10 @@
         prefix="${prefix}"
         mode="${mode}"
         name="${name}"
+        baseline="${baseline}"
         link_name="${link_name}"
+        left_camera_link_name="${left_camera_link_name}"
+        right_camera_link_name="${right_camera_link_name}"
         configuration="${configuration}"
         ros_namespace="${ros_namespace}" />
     </xacro:if>

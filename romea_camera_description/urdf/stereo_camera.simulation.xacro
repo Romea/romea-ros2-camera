@@ -3,7 +3,7 @@
 
 
   <xacro:macro name="camera_stereo_sensor_simulation"
-    params="prefix mode name link_name configuration ros_namespace">
+    params="prefix mode name baseline link_name left_camera_link_name right_camera_link_name configuration ros_namespace">
 
     <xacro:property name="image_width"
       value="${configuration['image_width']}" />
@@ -13,6 +13,81 @@
       value="${configuration['horizontal_fov']/180.*pi}" />
     <xacro:property name="frame_rate"
       value="${configuration['frame_rate']}" />
+
+    <xacro:if value="${'gazebo_classic' not in  mode}">
+
+      <gazebo reference="${link_name}">
+        <material>Gazebo/DarkYellow </material>
+
+        <sensor type="camera" name="${prefix}${name}_left_camera">
+          <update_rate>${frame_rate}</update_rate>
+          <topic>${ros_namespace}/left/image_raw</topic>
+          <gz_frame_id>${left_camera_link_name}</gz_frame_id>  <!-- used only with gazebo 6 or lower -->
+          <ignition_frame_id>${left_camera_link_name}</ignition_frame_id> <!-- used by gazebo 7 or higher-->
+
+          <camera>
+            <pose>0 -${baseline/2} 0 0 0 0</pose>
+            <horizontal_fov>${horizontal_fov}</horizontal_fov>
+            <image>
+              <width>${image_width}</width>
+              <height>${image_height}</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.01</near>
+              <far>100</far>
+            </clip>
+            <!-- <noise>
+                <type>gaussian</type>
+                <mean>0.0</mean>
+                <stddev>0.007</stddev>
+              </noise>
+              <distortion>
+                <k1>0.0</k1>
+                <k2>0.0</k2>
+                <k3>0.0</k3>
+                <p1>0.0</p1>
+                <p2>0.0</p2>
+                <center>0.5 0.5</center>
+              </distortion> -->
+          </camera>
+        </sensor>
+
+        <sensor type="camera" name="${prefix}${name}_right_camera">
+          <update_rate>${frame_rate}</update_rate>
+          <topic>${ros_namespace}/right/image_raw</topic>
+          <gz_frame_id>${right_camera_link_name}</gz_frame_id>  <!-- used only with gazebo 6 or lower -->
+          <ignition_frame_id>${right_camera_link_name}</ignition_frame_id> <!-- used by gazebo 7 or higher-->
+
+          <camera>
+            <pose>0 ${baseline/2} 0 0 0 0</pose>
+            <horizontal_fov>${horizontal_fov}</horizontal_fov>
+            <image>
+              <width>${image_width}</width>
+              <height>${image_height}</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.01</near>
+              <far>100</far>
+            </clip>
+            <!-- <noise>
+                <type>gaussian</type>
+                <mean>0.0</mean>
+                <stddev>0.007</stddev>
+              </noise>
+              <distortion>
+                <k1>0.0</k1>
+                <k2>0.0</k2>
+                <k3>0.0</k3>
+                <p1>0.0</p1>
+                <p2>0.0</p2>
+                <center>0.5 0.5</center>
+              </distortion> -->
+          </camera>
+        </sensor>
+      </gazebo>
+    </xacro:if>
 
     <xacro:if value="${'gazebo_classic' in  mode}">
 

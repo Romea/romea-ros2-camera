@@ -123,7 +123,7 @@ def launch_setup(context, *args, **kwargs):
         ros_bridge = Node(
             package="ros_gz_bridge",
             executable="parameter_bridge",
-            name="imu_bridge",
+            name="calera_bridge",
             arguments=["/robot/camera/image_raw@sensor_msgs/msg/Image@gz.msgs.Image"],
         )
 

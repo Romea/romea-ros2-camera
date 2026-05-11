@@ -1,11 +1,17 @@
 name: "camera"
 namespace: "ns"
-launch:
+launch: 
+#   - include:
+#       file: "$(find-pkg-share romea_camera_meta_bringup)/profile/zed-ros2-wrapper.launch.py"
+#       arg:
+#         - name: device
+#           value: /dev/video0
   - include:
-      file: "$(find-pkg-share romea_camera_meta_bringup)/profile/zed-ros2-wrapper.launch.py"
+      file: $(find-pkg-share romea_camera_meta_bringup)/profile/gz_bridge.launch.py
       arg:
-        - name: device
-          value: /dev/video0
+        - name: container
+          value: /gz_container
+      if: $(eval "'$(var mode)' == 'simulation_gazebo'")
 configuration:
   manufacturer: stereolabs
   model: zed

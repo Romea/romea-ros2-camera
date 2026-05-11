@@ -18,7 +18,7 @@ import sys
 
 from romea_camera_meta_bringup.meta_description import (
     CameraMetaDescription,
-    generate_launch_file,
+    generate_yaml_launch_file_str,
 )
 
 if __name__ == "__main__":
@@ -33,4 +33,4 @@ if __name__ == "__main__":
     robot_namespace = parameters["robot_namespace"]
     meta_description_file_path = parameters["meta_description_file_path"]
     meta_description = CameraMetaDescription(meta_description_file_path, robot_namespace)
-    print(generate_launch_file(meta_description))
+    print(generate_yaml_launch_file_str(meta_description))

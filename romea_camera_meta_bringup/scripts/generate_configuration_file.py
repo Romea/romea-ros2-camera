@@ -18,7 +18,7 @@ import sys
 
 from romea_camera_meta_bringup.meta_description import (
     CameraMetaDescription,
-    generate_configuration_file,
+    generate_yaml_configuration_file_str,
 )
 
 if __name__ == "__main__":
@@ -33,4 +33,4 @@ if __name__ == "__main__":
     extended = parameters.get("extended", "false") == "true"
     meta_description_file_path = parameters["meta_description_file_path"]
     meta_description = CameraMetaDescription(meta_description_file_path)
-    print(generate_configuration_file(meta_description, extended))
+    print(generate_yaml_configuration_file_str(meta_description, extended))
