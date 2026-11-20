@@ -18,6 +18,7 @@ from romea_common_meta_bringup.ros_launch import LaunchFileGenerator
 
 
 class CameraMetaDescription(SensorMetaDescription):
+
     def __init__(self, meta_description_file_path, robot_name=None):
         super().__init__("lidar", meta_description_file_path, robot_name)
 
